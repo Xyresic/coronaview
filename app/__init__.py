@@ -31,12 +31,12 @@ rename = {
 def get_data():
     parse = {}
     populations = {}
-    with open('./static/data/population.csv','r') as file:
+    with open('./app/static/data/population.csv','r') as file:
         reader = csv.reader(file)
         next(reader)
         for row in reader:
             populations[row[1]] = int(row[2])
-    with open('./static/data/covid19_confirmed.csv', 'r') as file:
+    with open('./app/static/data/covid19_confirmed.csv', 'r') as file:
         reader = csv.reader(file)
         next(reader)
         next(reader)
