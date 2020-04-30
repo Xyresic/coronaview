@@ -1,10 +1,16 @@
 The SIMPsons -- 2020-04-27 17:37
-	- drafted design doc
+    - Drafted design doc
   
-EricL -- 2020-04-29 8:15
-    - Implemented Map Zooming
+EricL -- 2020-04-29 09:05
+    - Loaded previous work as template
+    - Added flag
+    - Added gitignore
+    - Fixed file retrieval due to new structure
+  
+EricL -- 2020-04-29 20:15
+    - Implemented map zooming
 
-The SIMPsons -- 2020-04-29 8:30
+The SIMPsons -- 2020-04-29 20:30
     Team Raduckal's Review:
         - Elaborate on data transfer
         - Explain data granularity
