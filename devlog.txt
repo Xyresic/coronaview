@@ -1,3 +1,5 @@
-Team -- 2020-04-27 17:37
+The SIMPsons -- 2020-04-27 17:37
 	- drafted design doc
   
+EricL -- 2020-04-29 8:15
+    - Implemented Map Zooming

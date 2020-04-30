@@ -4,8 +4,8 @@ let trans_btn = document.getElementById('transition');
 let json_url = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-10m.json';
 let width = 1000;
 let height = 500;
-let date;
-let timer;
+let date, timer, center;
+let height_only = ['United States of America', 'France', 'Russia', 'Fiji'];
 
 let get_date = () => {
     return date.toISOString().slice(0,10);
@@ -46,18 +46,18 @@ let format_tooltip = (d) => {
     return '<b>' + d.properties.name + '</b><br>Cases: ' + get_cases(d)
 };
 
-let display_tooltip = function(d) {
+let display_tooltip = (d) => {
     $('#tooltip').css({top:d3.event.pageY, left:d3.event.pageX});
     d3.select('.tooltip').style('pointer-events','none');
     d3.select('#tooltip').attr('data-original-title', format_tooltip(d));
     $('[data-toggle="tooltip"]').tooltip('show');
 };
 
-let hide_tooltip = function(d) {
+let hide_tooltip = () => {
     $('[data-toggle="tooltip"]').tooltip('hide');
 };
 
-function ramp(color, n = 256) {
+let ramp = (color, n = 256) => {
     let canvas = document.createElement('canvas');
     canvas.width = 1;
     canvas.height = n;
@@ -67,6 +67,29 @@ function ramp(color, n = 256) {
         context.fillRect(0, i, 1, 1);
     }
     return canvas;
+};
+
+let zoom = (d) => {
+    let x, y, k;
+    if (center != d.properties.name) {
+        center = d.properties.name;
+        let centroid = path.centroid(d);
+        x = centroid[0];
+        y = centroid[1];
+        let bounds = path.bounds(d);
+        let width_scale = 0.8*width/(bounds[1][0]-bounds[0][0]);
+        let height_scale = 0.8*height/(bounds[1][1]-bounds[0][1]);
+        k = height_only.includes(center)? height_scale:Math.min(width_scale, height_scale);
+    } else {
+        center = null;
+        x = width/2;
+        y = height/2;
+        k = 1;
+    }
+    d3.select('g').transition()
+        .duration(1000)
+        .attr('transform', `translate(${width/2},${height/2})scale(${k})translate(${-x},${-y})`);
+
 };
 
 let render = () => {
@@ -86,7 +109,8 @@ let render = () => {
                 .attr('fill', d => color(get_percent(d)))
                 .classed('has_data', d => color(get_percent(d)) == 'rgb(204, 204, 205)')
                 .on('mousemove', display_tooltip)
-                .on('mouseleave', hide_tooltip);
+                .on('mouseleave', hide_tooltip)
+                .on('click', zoom);
 
         d3.select('svg').append('image')
             .attr('x', 100)
