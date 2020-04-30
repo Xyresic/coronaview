@@ -29,3 +29,6 @@ The SIMPsons -- 2020-04-29 20:30
         Minimum Viable Product: 2020-04-30
         Complete Product: 2020-05-04
         Extra Features: 2020-05-11
+
+EricL -- 2020-04-30 08:32
+    - Added launch codes
