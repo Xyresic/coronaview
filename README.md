@@ -1,9 +1,15 @@
-# P04_The-SIMPsons
+# CoronaView<sup>TM</sup> by The SIMPsons
+This is a visualization of the spread of COVID-19 with data incorporated into an interactable world map, 
+providing a broad overview with the ability to obtain more data by clicking on a region.
 
-David Lupea, Joseph Lee, Eric Lam, Michael Zhang <br>
-SoftDev pd09 <br>
-P04-The SIMPsons <br>
-2020-4-24 <br>
+## Roster
+David Lupea: Project Manager
+
+Joseph Lee: Backend
+
+Eric Lam: Data Management
+
+Michael Zhang: Frontend
 
 ## Launch Codes
 ```shell script
