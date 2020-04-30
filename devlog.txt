@@ -3,3 +3,23 @@ The SIMPsons -- 2020-04-27 17:37
   
 EricL -- 2020-04-29 8:15
     - Implemented Map Zooming
+
+The SIMPsons -- 2020-04-29 8:30
+    Team Raduckal's Review:
+        - Elaborate on data transfer
+        - Explain data granularity
+        - "Dope curl stuff"
+        - Clear and concise flow of components
+        - Good database schema
+    Team Eclipse's Review:
+        - Elaborate on data transfer, diagram?
+        - Good database schema
+        - Clear flow of components
+        - Reasonable timeline
+    Modifications Made:
+        - Adjusted timeline
+        - Expanded on data transfer mechanism
+    Timeline Adjustments: extended time for extra features as we've made good progress
+        Minimum Viable Product: 2020-04-30
+        Complete Product: 2020-05-04
+        Extra Features: 2020-05-11
