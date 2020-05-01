@@ -20,7 +20,7 @@ let proj = d3.geoEqualEarth()
             .translate([width/2, height/2]);
 let path = d3.geoPath(proj);
 
-let data_full = d3.json('/data').then(d => data_full = d);
+let data_full = d3.json('/data/cases').then(d => data_full = d);
 let map_data = d3.json(json_url)
 let get_percent = (d) => {
     let data_dated = data_full[get_date()];

@@ -33,3 +33,13 @@ The SIMPsons -- 2020-04-29 20:30
 EricL -- 2020-04-30 08:40
     - Added launch codes
     - Brought readme up to standard
+
+EricL -- 2020-04-30 11:20
+    - Added database models
+
+EricL -- 2020-05-01 15:40
+    - Added db building script
+    - Ported data to database
+
+EricL -- 2020-05-01 19:40
+    - Connected database to D3
