@@ -1,31 +1,13 @@
-import os, csv
+import os, sys, csv
 from flask import Flask, render_template, jsonify
+from tables import db
 
 app = Flask(__name__)
 app.secret_key = os.urandom(32)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///./static/data/database.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = 'False'
 
-rename = {
-    "Antigua and Barbuda":"Antigua and Barb.",
-    "Bosnia and Herzegovina":"Bosnia and Herz.",
-    "Burma":"Myanmar",
-    "Central African Republic":"Central African Rep.",
-    "Congo (Brazzaville)":"Congo",
-    "Congo (Kinshasa)":"Dem. Rep. Congo",
-    "Cote d'Ivoire":"Côte d'Ivoire",
-    "Cyprus":"N. Cyprus",
-    "Dominican Republic":"Dominican Rep.",
-    "Equatorial Guinea":"Eq. Guinea",
-    "Eswatini":"eSwatini",
-    "Korea, South":"South Korea",
-    "Saint Kitts and Nevis":"St. Kitts and Nevis",
-    "Saint Vincent and the Grenadines":"St. Vin. and Gren.",
-    "Sao Tome and Principe":"São Tomé and Principe",
-    "South Sudan":"S. Sudan",
-    "Taiwan*":"Taiwan",
-    "North Macedonia":"Macedonia",
-    "US":"United States of America",
-    "Western Sahara":"W. Sahara"
-}
+db.init_app(app)
 
 
 def get_data():

@@ -1,26 +1,26 @@
 from flask_sqlalchemy import SQLAlchemy
+
 db = SQLAlchemy()
 
 
 class Countries(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), nullable=False)
-    code = db.Column(db.String(3))
+    name = db.Column(db.String(64))
+    code = db.Column(db.String(3), nullable=False)
     population = db.Column(db.Integer)
 
     cases = db.relationship('Cases', backref='country')
     deaths = db.relationship('Deaths', backref='country')
     recovered = db.relationship('Recovered', backref='country')
 
-    def __init__(self, name, code, population):
-        self.name = name
+    def __init__(self, code, population):
         self.code = code
         self.population = population
 
 
 class Cases(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.Date, nullable=False)
+    date = db.Column(db.String(10), nullable=False)
     amount = db.Column(db.Integer, nullable=False)
 
     country_id = db.Column(db.ForeignKey('countries.id'))
@@ -36,10 +36,10 @@ class Cases(db.Model):
 
 class Deaths(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.Date, nullable=False)
+    date = db.Column(db.String(10), nullable=False)
     amount = db.Column(db.Integer, nullable=False)
 
-    country_id = db.ForeignKey('countries.id')
+    country_id = db.Column(db.ForeignKey('countries.id'))
     cases_id = db.Column(db.ForeignKey('cases.id'))
 
     def __init__(self, date, amount, country_id, cases_id):
@@ -51,10 +51,10 @@ class Deaths(db.Model):
 
 class Recovered(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.Date, nullable=False)
+    date = db.Column(db.String(10), nullable=False)
     amount = db.Column(db.Integer, nullable=False)
 
-    country_id = db.ForeignKey('countries.id')
+    country_id = db.Column(db.ForeignKey('countries.id'))
     cases_id = db.Column(db.ForeignKey('cases.id'))
 
     def __init__(self, date, amount, country_id, cases_id):
