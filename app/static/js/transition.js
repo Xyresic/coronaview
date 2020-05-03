@@ -183,8 +183,10 @@ let advance = () => {
 };
 
 let update = () => {
-
-}
+    date = new Date('2020-01-22');
+    date.setDate(date.getDate() + parseInt(slider.value));
+    d3.select('.date').text(get_date_formatted());
+};
 
 trans_btn.style.pointerEvents = 'none';
 rend_btn.style.pointerEvents = 'none';
