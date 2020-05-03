@@ -1,54 +1,52 @@
 let rend_btn = document.getElementById('render');
 let trans_btn = document.getElementById('transition');
+let slider = document.getElementById('slider');
 
-let json_url = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-10m.json';
+let map_url = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-10m.json';
 let width = 1000;
 let height = 500;
 let date, timer, center;
 let height_only = ['United States of America', 'France', 'Russia', 'Fiji'];
 
 let get_date = () => {
-    return date.toISOString().slice(0,10);
+    return date.toISOString().slice(0, 10);
 };
 let get_date_formatted = () => {
-    return date.toLocaleString('default', {month:'long', day:'numeric', year:"numeric"});
+    return date.toLocaleString('default', {month: 'long', day: 'numeric', year: "numeric"});
 }
 
-let proj = d3.geoEqualEarth()
-            .scale(width/2/Math.PI)
-            .center([0,0])
-            .translate([width/2, height/2]);
-let path = d3.geoPath(proj);
+let path = d3.geoPath(d3.geoEqualEarth()
+    .scale(width / 2 / Math.PI)
+    .center([0, 0])
+    .translate([width / 2, height / 2]));
 
 let data_full = d3.json('/data/cases').then(d => data_full = d);
-let map_data = d3.json(json_url)
+let map_data = d3.json(map_url)
 let get_percent = (d) => {
     let data_dated = data_full[get_date()];
     if (data_dated.hasOwnProperty(d.properties.name)) {
         return data_dated[d.properties.name][0];
-    }
-    else return undefined;
+    } else return undefined;
 };
 let get_cases = (d) => {
     let data_dated = data_full[get_date()];
     if (data_dated.hasOwnProperty(d.properties.name)) {
         return data_dated[d.properties.name][1].toLocaleString();
-    }
-    else return 0;
+    } else return 0;
 };
 
 let color = d3.scaleSequential()
-                .domain([0,0.002])
-                .interpolator(d3.interpolateRgbBasis(['#cccccd','red','black']))
-                .unknown('#ccc');
+    .domain([0, 0.002])
+    .interpolator(d3.interpolateRgbBasis(['#cccccd', 'red', 'black']))
+    .unknown('#ccc');
 
 let format_tooltip = (d) => {
     return '<b>' + d.properties.name + '</b><br>Cases: ' + get_cases(d)
 };
 
 let display_tooltip = (d) => {
-    $('#tooltip').css({top:d3.event.pageY, left:d3.event.pageX});
-    d3.select('.tooltip').style('pointer-events','none');
+    $('#tooltip').css({top: d3.event.pageY, left: d3.event.pageX});
+    d3.select('.tooltip').style('pointer-events', 'none');
     d3.select('#tooltip').attr('data-original-title', format_tooltip(d));
     $('[data-toggle="tooltip"]').tooltip('show');
 };
@@ -77,19 +75,18 @@ let zoom = (d) => {
         x = centroid[0];
         y = centroid[1];
         let bounds = path.bounds(d);
-        let width_scale = 0.8*width/(bounds[1][0]-bounds[0][0]);
-        let height_scale = 0.8*height/(bounds[1][1]-bounds[0][1]);
-        k = height_only.includes(center)? height_scale:Math.min(width_scale, height_scale);
+        let width_scale = 0.8 * width / (bounds[1][0] - bounds[0][0]);
+        let height_scale = 0.8 * height / (bounds[1][1] - bounds[0][1]);
+        k = height_only.includes(center) ? height_scale : Math.min(width_scale, height_scale);
     } else {
         center = null;
-        x = width/2;
-        y = height/2;
+        x = width / 2;
+        y = height / 2;
         k = 1;
     }
     d3.select('g').transition()
         .duration(1000)
-        .attr('transform', `translate(${width/2},${height/2})scale(${k})translate(${-x},${-y})`);
-
+        .attr('transform', `translate(${width / 2},${height / 2})scale(${k})translate(${-x},${-y})`);
 };
 
 let render = () => {
@@ -105,12 +102,12 @@ let render = () => {
         d3.select('svg').append('g').selectAll('path')
             .data(countries.features)
             .join('path')
-                .attr('d', path)
-                .attr('fill', d => color(get_percent(d)))
-                .classed('has_data', d => color(get_percent(d)) == 'rgb(204, 204, 205)')
-                .on('mousemove', display_tooltip)
-                .on('mouseleave', hide_tooltip)
-                .on('click', zoom);
+            .attr('d', path)
+            .attr('fill', d => color(get_percent(d)))
+            .classed('has_data', d => color(get_percent(d)) == 'rgb(204, 204, 205)')
+            .on('mousemove', display_tooltip)
+            .on('mouseleave', hide_tooltip)
+            .on('click', zoom);
 
         d3.select('svg').append('image')
             .attr('x', 100)
@@ -155,7 +152,7 @@ let render = () => {
 };
 
 let advance = () => {
-    trans_btn.setAttribute('disabled','');
+    trans_btn.setAttribute('disabled', '');
     trans_btn.style.pointerEvents = 'none';
 
     timer = d3.interval((elapsed) => {
@@ -163,25 +160,32 @@ let advance = () => {
         d3.select('.date').text(get_date_formatted());
 
         let hover = document.querySelectorAll(':hover');
-        let country = hover[hover.length-1];
-        if (country.tagName == 'path') {
+        let country = hover[hover.length - 1];
+        if (country !== undefined && country.tagName == 'path') {
             d3.select('#tooltip')
                 .attr('data-original-title', format_tooltip(d3.select(country).data()[0]));
             $('[data-toggle="tooltip"]').tooltip('hide');
             $('[data-toggle="tooltip"]').tooltip('show');
         }
 
+        $('#slider').attr('value', (i, v) => ++v);
+
         d3.selectAll('.has_data').transition()
             .duration(100)
             .attr('fill', d => color(get_percent(d)));
 
-        if (elapsed > 150 * 90) timer.stop();
+        if (elapsed > 150 * 100) timer.stop();
     }, 150);
 };
 
+let update = () => {
+
+}
+
 d3.select('#map').append('svg').attr('viewBox', [0, 0, width, height])
-                                .style('max-height','85vh');
+    .style('max-height', '85vh');
 trans_btn.style.pointerEvents = 'none';
 
 rend_btn.addEventListener('click', render);
 trans_btn.addEventListener('click', advance);
+slider.addEventListener('input', update)
