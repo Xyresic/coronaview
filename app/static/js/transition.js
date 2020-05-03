@@ -20,7 +20,11 @@ let path = d3.geoPath(d3.geoEqualEarth()
     .center([0, 0])
     .translate([width / 2, height / 2]));
 
-let data_full = d3.json('/data/cases').then(d => data_full = d);
+let data_full = d3.json('/data/cases').then(d => {
+    data_full = d;
+    rend_btn.removeAttribute('disabled');
+    rend_btn.style.pointerEvents = null;
+});
 let map_data = d3.json(map_url)
 let get_percent = (d) => {
     let data_dated = data_full[get_date()];
@@ -182,9 +186,10 @@ let update = () => {
 
 }
 
+trans_btn.style.pointerEvents = 'none';
+rend_btn.style.pointerEvents = 'none';
 d3.select('#map').append('svg').attr('viewBox', [0, 0, width, height])
     .style('max-height', '85vh');
-trans_btn.style.pointerEvents = 'none';
 
 rend_btn.addEventListener('click', render);
 trans_btn.addEventListener('click', advance);
