@@ -160,6 +160,8 @@ let advance = () => {
     trans_btn.setAttribute('disabled', '');
     trans_btn.style.pointerEvents = 'none';
 
+    let slider_pos = parseInt(slider.value)
+
     timer = d3.interval((elapsed) => {
         date.setDate(date.getDate() + 1);
         d3.select('.date').text(get_date_formatted());
@@ -173,13 +175,13 @@ let advance = () => {
             $('[data-toggle="tooltip"]').tooltip('show');
         }
 
-        $('#slider').attr('value', (i, v) => ++v);
+        slider.value = parseInt(slider.value) + 1;
 
         d3.selectAll('.has_data').transition()
             .duration(100)
             .attr('fill', d => color(get_percent(d)));
 
-        if (elapsed > 150 * 100) timer.stop();
+        if (elapsed > 150 * (100 - slider_pos)) timer.stop();
     }, 150);
 };
 
@@ -187,6 +189,14 @@ let update = () => {
     date = new Date('2020-01-22');
     date.setDate(date.getDate() + parseInt(slider.value));
     d3.select('.date').text(get_date_formatted());
+
+    if (parseInt(slider.value) < 100) {
+        trans_btn.removeAttribute('disabled');
+        trans_btn.style.pointerEvents = null;
+    } else {
+        trans_btn.setAttribute('disabled', '');
+        trans_btn.style.pointerEvents = 'none';
+    }
 
     d3.selectAll('.has_data').transition()
             .duration(100)
