@@ -100,6 +100,7 @@ let render = () => {
     d3.selectAll('svg *').remove();
     trans_btn.removeAttribute('disabled');
     trans_btn.style.pointerEvents = null;
+    slider.removeAttribute('disabled');
 
     map_data.then(d => {
         let countries = topojson.feature(d, d.objects.countries);
@@ -186,6 +187,10 @@ let update = () => {
     date = new Date('2020-01-22');
     date.setDate(date.getDate() + parseInt(slider.value));
     d3.select('.date').text(get_date_formatted());
+
+    d3.selectAll('.has_data').transition()
+            .duration(100)
+            .attr('fill', d => color(get_percent(d)));
 };
 
 trans_btn.style.pointerEvents = 'none';
