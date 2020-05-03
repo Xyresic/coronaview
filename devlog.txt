@@ -43,3 +43,8 @@ EricL -- 2020-05-01 15:40
 
 EricL -- 2020-05-01 19:40
     - Connected database to D3
+
+EricL -- 2020-05-03 14:22
+    - Implemented slider
+    - Fixed rendering before promise fulfillment
+    - Update play button for slider compatibility
