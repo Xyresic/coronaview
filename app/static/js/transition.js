@@ -1,4 +1,4 @@
-let rend_btn = document.getElementById('render');
+let selector = document.getElementById('selector');
 let trans_btn = document.getElementById('transition');
 let slider = document.getElementById('slider');
 
@@ -22,9 +22,12 @@ let path = d3.geoPath(d3.geoEqualEarth()
 
 let data_full = d3.json('/data/cases').then(d => {
     data_full = d;
-    rend_btn.removeAttribute('disabled');
-    rend_btn.style.pointerEvents = null;
+    $('.selectpicker').prop('disabled', false);
+    $('.selectpicker').selectpicker('refresh');
+    slider.removeAttribute('disabled');
+    render();
 });
+
 let map_data = d3.json(map_url)
 let get_percent = (d) => {
     let data_dated = data_full[get_date()];
@@ -34,7 +37,7 @@ let get_percent = (d) => {
 };
 let get_cases = (d) => {
     let data_dated = data_full[get_date()];
-    if (data_dated.hasOwnProperty(d.properties.name)) {
+    if (data_dated !== undefined && data_dated.hasOwnProperty(d.properties.name)) {
         return data_dated[d.properties.name][1].toLocaleString();
     } else return 0;
 };
@@ -45,7 +48,7 @@ let color = d3.scaleSequential()
     .unknown('#ccc');
 
 let format_tooltip = (d) => {
-    return '<b>' + d.properties.name + '</b><br>Cases: ' + get_cases(d)
+    return '<b>' + d.properties.name + `</b><br>${selector.value}: ` + get_cases(d)
 };
 
 let display_tooltip = (d) => {
@@ -95,12 +98,11 @@ let zoom = (d) => {
 
 let render = () => {
     if (timer != null) timer.stop();
-    rend_btn.innerText = 'Reset';
     date = new Date('2020-01-22');
     d3.selectAll('svg *').remove();
     trans_btn.removeAttribute('disabled');
     trans_btn.style.pointerEvents = null;
-    slider.removeAttribute('disabled');
+    slider.value = 0;
 
     map_data.then(d => {
         let countries = topojson.feature(d, d.objects.countries);
@@ -139,7 +141,7 @@ let render = () => {
             .call(tickAdjust)
             .call(g => g.select('.domain').remove())
             .call(g => g.append('text')
-                .text('Cases (% of Population)')
+                .text('% of Population')
                 .attr('x', 0)
                 .attr('y', 340)
                 .attr('fill', 'black')
@@ -190,6 +192,8 @@ let update = () => {
     date.setDate(date.getDate() + parseInt(slider.value));
     d3.select('.date').text(get_date_formatted());
 
+    if (timer != null) timer.stop();
+
     if (parseInt(slider.value) < 100) {
         trans_btn.removeAttribute('disabled');
         trans_btn.style.pointerEvents = null;
@@ -203,11 +207,25 @@ let update = () => {
             .attr('fill', d => color(get_percent(d)));
 };
 
+let change_data = () => {
+    data_full = d3.json(`/data/${selector.value.toLowerCase()}`).then(d => {
+        data_full = d;
+        if (selector.value == 'Cases') {
+            color.interpolator(d3.interpolateRgbBasis(['#cccccd', 'red', 'black']));
+        } else if (selector.value == 'Deaths') {
+            color.interpolator(d3.interpolateRgbBasis(['#cccccd', 'black']))
+        } else {
+            color.interpolator(d3.interpolateRgbBasis(['#cccccd', 'lightblue', 'blue']))
+        }
+        render();
+    });
+};
+
 trans_btn.style.pointerEvents = 'none';
-rend_btn.style.pointerEvents = 'none';
+$('#selector').selectpicker('render');
 d3.select('#map').append('svg').attr('viewBox', [0, 0, width, height])
     .style('max-height', '85vh');
 
-rend_btn.addEventListener('click', render);
 trans_btn.addEventListener('click', advance);
-slider.addEventListener('input', update)
+slider.addEventListener('input', update);
+selector.addEventListener('change', change_data);
