@@ -1,4 +1,4 @@
-let rend_btn = document.getElementById('render');
+let selector = document.getElementById('selector');
 let trans_btn = document.getElementById('transition');
 let slider = document.getElementById('slider');
 
@@ -22,8 +22,8 @@ let path = d3.geoPath(d3.geoEqualEarth()
 
 let data_full = d3.json('/data/cases').then(d => {
     data_full = d;
-    rend_btn.removeAttribute('disabled');
-    rend_btn.style.pointerEvents = null;
+    selector.removeAttribute('disabled');
+    selector.style.pointerEvents = null;
 });
 let map_data = d3.json(map_url)
 let get_percent = (d) => {
@@ -95,7 +95,6 @@ let zoom = (d) => {
 
 let render = () => {
     if (timer != null) timer.stop();
-    rend_btn.innerText = 'Reset';
     date = new Date('2020-01-22');
     d3.selectAll('svg *').remove();
     trans_btn.removeAttribute('disabled');
@@ -206,10 +205,10 @@ let update = () => {
 };
 
 trans_btn.style.pointerEvents = 'none';
-rend_btn.style.pointerEvents = 'none';
+selector.style.pointerEvents = 'none';
+$('#selector').selectpicker('render');
 d3.select('#map').append('svg').attr('viewBox', [0, 0, width, height])
     .style('max-height', '85vh');
 
-rend_btn.addEventListener('click', render);
 trans_btn.addEventListener('click', advance);
 slider.addEventListener('input', update)
