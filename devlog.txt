@@ -48,3 +48,9 @@ EricL -- 2020-05-03 14:22
     - Implemented slider
     - Fixed rendering before promise fulfillment
     - Update play button for slider compatibility
+
+EricL -- 2020-05-04 19:25
+    - Fixed slider not pausing animation
+    - Changed render button to a selector
+    - Implemented switching data sets with selector
+    - Fixed tooltip errors
