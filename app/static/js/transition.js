@@ -27,6 +27,7 @@ let data_full = d3.json('/data/cases').then(d => {
     slider.removeAttribute('disabled');
     render();
 });
+
 let map_data = d3.json(map_url)
 let get_percent = (d) => {
     let data_dated = data_full[get_date()];
@@ -205,10 +206,18 @@ let update = () => {
             .attr('fill', d => color(get_percent(d)));
 };
 
+let change_data = () => {
+    data_full = d3.json(`/data/${selector.value.toLowerCase()}`).then(d => {
+        data_full = d;
+        render();
+    });
+};
+
 trans_btn.style.pointerEvents = 'none';
 $('#selector').selectpicker('render');
 d3.select('#map').append('svg').attr('viewBox', [0, 0, width, height])
     .style('max-height', '85vh');
 
 trans_btn.addEventListener('click', advance);
-slider.addEventListener('input', update)
+slider.addEventListener('input', update);
+selector.addEventListener('change', change_data);
