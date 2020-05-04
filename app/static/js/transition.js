@@ -190,6 +190,8 @@ let update = () => {
     date.setDate(date.getDate() + parseInt(slider.value));
     d3.select('.date').text(get_date_formatted());
 
+    if (timer != null) timer.stop();
+
     if (parseInt(slider.value) < 100) {
         trans_btn.removeAttribute('disabled');
         trans_btn.style.pointerEvents = null;
