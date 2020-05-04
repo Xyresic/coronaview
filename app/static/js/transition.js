@@ -48,7 +48,7 @@ let color = d3.scaleSequential()
     .unknown('#ccc');
 
 let format_tooltip = (d) => {
-    return '<b>' + d.properties.name + '</b><br>Cases: ' + get_cases(d)
+    return '<b>' + d.properties.name + `</b><br>${selector.value}: ` + get_cases(d)
 };
 
 let display_tooltip = (d) => {
