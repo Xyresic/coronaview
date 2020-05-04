@@ -22,8 +22,10 @@ let path = d3.geoPath(d3.geoEqualEarth()
 
 let data_full = d3.json('/data/cases').then(d => {
     data_full = d;
-    selector.removeAttribute('disabled');
-    selector.style.pointerEvents = null;
+    $('.selectpicker').prop('disabled', false);
+    $('.selectpicker').selectpicker('refresh');
+    slider.removeAttribute('disabled');
+    render();
 });
 let map_data = d3.json(map_url)
 let get_percent = (d) => {
@@ -99,7 +101,6 @@ let render = () => {
     d3.selectAll('svg *').remove();
     trans_btn.removeAttribute('disabled');
     trans_btn.style.pointerEvents = null;
-    slider.removeAttribute('disabled');
 
     map_data.then(d => {
         let countries = topojson.feature(d, d.objects.countries);
@@ -205,7 +206,6 @@ let update = () => {
 };
 
 trans_btn.style.pointerEvents = 'none';
-selector.style.pointerEvents = 'none';
 $('#selector').selectpicker('render');
 d3.select('#map').append('svg').attr('viewBox', [0, 0, width, height])
     .style('max-height', '85vh');
