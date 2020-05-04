@@ -37,7 +37,7 @@ let get_percent = (d) => {
 };
 let get_cases = (d) => {
     let data_dated = data_full[get_date()];
-    if (data_dated.hasOwnProperty(d.properties.name)) {
+    if (data_dated !== undefined && data_dated.hasOwnProperty(d.properties.name)) {
         return data_dated[d.properties.name][1].toLocaleString();
     } else return 0;
 };
