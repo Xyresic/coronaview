@@ -102,6 +102,7 @@ let render = () => {
     d3.selectAll('svg *').remove();
     trans_btn.removeAttribute('disabled');
     trans_btn.style.pointerEvents = null;
+    slider.value = 0;
 
     map_data.then(d => {
         let countries = topojson.feature(d, d.objects.countries);
@@ -140,7 +141,7 @@ let render = () => {
             .call(tickAdjust)
             .call(g => g.select('.domain').remove())
             .call(g => g.append('text')
-                .text('Cases (% of Population)')
+                .text('% of Population')
                 .attr('x', 0)
                 .attr('y', 340)
                 .attr('fill', 'black')
@@ -209,6 +210,13 @@ let update = () => {
 let change_data = () => {
     data_full = d3.json(`/data/${selector.value.toLowerCase()}`).then(d => {
         data_full = d;
+        if (selector.value == 'Cases') {
+            color.interpolator(d3.interpolateRgbBasis(['#cccccd', 'red', 'black']));
+        } else if (selector.value == 'Deaths') {
+            color.interpolator(d3.interpolateRgbBasis(['#cccccd', 'black']))
+        } else {
+            color.interpolator(d3.interpolateRgbBasis(['#cccccd', 'lightblue', 'blue']))
+        }
         render();
     });
 };
