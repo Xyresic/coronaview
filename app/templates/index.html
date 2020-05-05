@@ -10,6 +10,15 @@
         #tooltip {
             position: absolute;
         }
+        #controls {
+            width: 60%;
+        }
+        #map {
+            max-width: 100%;
+        }
+        #date-container {
+            max-height: 5vh;
+        }
     </style>
 {% endblock %}
 
@@ -18,7 +27,7 @@
         <a class="navbar-brand">COVID-19 Progression</a>
     </nav>
     <div class="container-fluid p-3 mx-auto">
-        <div class="d-flex justify-content-center align-items-center m-auto" style="width: 60%">
+        <div class="d-flex justify-content-center align-items-center mx-auto" id="controls">
             <select class="selectpicker mr-3" data-style="btn-outline-primary" id="selector" disabled>
                 <option>Cases</option>
                 <option>Deaths</option>
@@ -27,7 +36,8 @@
             <input type="range" class="custom-range" value="0" step="1" id="slider" disabled>
             <button type="button" class="btn btn-outline-primary ml-3" id="transition" disabled>Play</button>
         </div>
-        <div id="map" class="container" style="display: inline-block; max-width: 100%"></div>
+        <div id="map" class="d-flex justify-content-center align-items-center mt-3"></div>
+        <div id="date-container" class="d-flex justify-content-center align-items-center mt-3"></div>
     </div>
     <i id="tooltip" data-toggle="tooltip" data-placement="top" data-animation="false" data-html="true"></i>
 {% endblock %}
