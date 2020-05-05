@@ -45,7 +45,7 @@ let get_cases = (d) => {
 
 let color = d3.scaleSequential()
     .domain([0, 0.002])
-    .interpolator(d3.interpolateRgbBasis(['#cccccd', 'red', 'black']))
+    .interpolator(d3.interpolateRgbBasis(['#cccccd', 'red', '#320000']))
     .unknown('#ccc');
 
 let format_tooltip = (d) => {
@@ -215,11 +215,11 @@ let change_data = () => {
     data_full = d3.json(`/data/${mode.toLowerCase()}`).then(d => {
         data_full = d;
         if (mode == 'Cases') {
-            color.interpolator(d3.interpolateRgbBasis(['#cccccd', 'red', 'black']));
+            color.interpolator(d3.interpolateRgbBasis(['#cccccd', 'red', '#320000']));
         } else if (mode == 'Deaths') {
-            color.interpolator(d3.interpolateRgbBasis(['#cccccd', 'black']));
+            color.interpolator(d3.interpolateRgbBasis(['#cccccd', 'purple', 'black']));
         } else {
-            color.interpolator(d3.interpolateRgbBasis(['#cccccd', 'lightblue', 'blue']));
+            color.interpolator(d3.interpolateRgbBasis(['#cccccd', 'lightblue', 'darkblue']));
         }
         render();
     });
