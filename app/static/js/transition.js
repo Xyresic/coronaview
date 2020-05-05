@@ -7,6 +7,7 @@ let width = 1000;
 let height = 500;
 let date, timer, center;
 let height_only = ['United States of America', 'France', 'Russia', 'Fiji'];
+let mode = 'Cases';
 
 let get_date = () => {
     return date.toISOString().slice(0, 10);
@@ -44,11 +45,11 @@ let get_cases = (d) => {
 
 let color = d3.scaleSequential()
     .domain([0, 0.002])
-    .interpolator(d3.interpolateRgbBasis(['#cccccd', 'red', 'black']))
+    .interpolator(d3.interpolateRgbBasis(['#cccccd', 'red', '#320000']))
     .unknown('#ccc');
 
 let format_tooltip = (d) => {
-    return '<b>' + d.properties.name + `</b><br>${selector.value}: ` + get_cases(d)
+    return '<b>' + d.properties.name + `</b><br>${mode}: ` + get_cases(d)
 };
 
 let display_tooltip = (d) => {
@@ -91,7 +92,7 @@ let zoom = (d) => {
         y = height / 2;
         k = 1;
     }
-    d3.select('g').transition()
+    d3.select('.countries').transition()
         .duration(1000)
         .attr('transform', `translate(${width / 2},${height / 2})scale(${k})translate(${-x},${-y})`);
 };
@@ -106,19 +107,21 @@ let render = () => {
 
     map_data.then(d => {
         let countries = topojson.feature(d, d.objects.countries);
-        d3.select('svg').append('g').selectAll('path')
-            .data(countries.features)
-            .join('path')
-            .attr('d', path)
-            .attr('fill', d => color(get_percent(d)))
-            .classed('has_data', d => color(get_percent(d)) == 'rgb(204, 204, 205)')
-            .on('mousemove', display_tooltip)
-            .on('mouseleave', hide_tooltip)
-            .on('click', zoom);
+        d3.select('#main').append('g')
+            .classed('countries', true)
+            .selectAll('path')
+                .data(countries.features)
+                .join('path')
+                .attr('d', path)
+                .attr('fill', d => color(get_percent(d)))
+                .classed('has_data', d => color(get_percent(d)) == 'rgb(204, 204, 205)')
+                .on('mousemove', display_tooltip)
+                .on('mouseleave', hide_tooltip)
+                .on('click', zoom);
 
-        d3.select('svg').append('image')
-            .attr('x', 100)
-            .attr('y', 90)
+        d3.select('#scale').append('image')
+            .attr('x', 50)
+            .attr('y', 10)
             .attr('width', 10)
             .attr('height', 320)
             .attr('preserveAspectRatio', 'none')
@@ -131,10 +134,10 @@ let render = () => {
             }
         });
         let tickAdjust = g => {
-            g.selectAll('.tick line').attr('x2', 10).attr('x1', -10);
+            g.selectAll('.tick line').attr('x2', 20).attr('x1', 0);
         };
-        d3.select('svg').append('g')
-            .attr('transform', 'translate(100,90)')
+        d3.select('#scale').append('g')
+            .attr('transform', 'translate(40,10)')
             .call(d3.axisLeft(scale)
                 .ticks(5)
                 .tickSize(10))
@@ -148,9 +151,9 @@ let render = () => {
                 .attr('text-anchor', 'middle')
                 .style('font', 'bold'));
 
-        d3.select('svg').append('text')
+        d3.select('#date').append('text')
             .attr('x', '50%')
-            .attr('y', height - 8)
+            .attr('y', '50%')
             .attr('text-anchor', 'middle')
             .text(get_date_formatted())
             .style('font', 'bold 30px sans-serif')
@@ -208,14 +211,15 @@ let update = () => {
 };
 
 let change_data = () => {
-    data_full = d3.json(`/data/${selector.value.toLowerCase()}`).then(d => {
+    mode = selector.value;
+    data_full = d3.json(`/data/${mode.toLowerCase()}`).then(d => {
         data_full = d;
-        if (selector.value == 'Cases') {
-            color.interpolator(d3.interpolateRgbBasis(['#cccccd', 'red', 'black']));
-        } else if (selector.value == 'Deaths') {
-            color.interpolator(d3.interpolateRgbBasis(['#cccccd', 'black']))
+        if (mode == 'Cases') {
+            color.interpolator(d3.interpolateRgbBasis(['#cccccd', 'red', '#320000']));
+        } else if (mode == 'Deaths') {
+            color.interpolator(d3.interpolateRgbBasis(['#cccccd', 'purple', 'black']));
         } else {
-            color.interpolator(d3.interpolateRgbBasis(['#cccccd', 'lightblue', 'blue']))
+            color.interpolator(d3.interpolateRgbBasis(['#cccccd', 'lightblue', 'darkblue']));
         }
         render();
     });
@@ -223,8 +227,19 @@ let change_data = () => {
 
 trans_btn.style.pointerEvents = 'none';
 $('#selector').selectpicker('render');
-d3.select('#map').append('svg').attr('viewBox', [0, 0, width, height])
+d3.select('#map').append('svg')
+    .attr('id', 'scale')
+    .attr('width', 80)
+    .attr('height', 360)
     .style('max-height', '85vh');
+d3.select('#map').append('svg')
+    .attr('viewBox', [0, 0, width, height])
+    .attr('id', 'main')
+    .attr('width', width)
+    .style('max-width', '80vw')
+    .style('max-height', '85vh');
+d3.select('#date-container').append('svg')
+    .attr('id', 'date');
 
 trans_btn.addEventListener('click', advance);
 slider.addEventListener('input', update);
