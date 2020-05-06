@@ -45,22 +45,33 @@ let get_cases = (d) => {
 
 let color = d3.scaleSequential()
     .domain([0, 0.002])
-    .interpolator(d3.interpolateRgbBasis(['#cccccd', 'red', '#320000']))
+    .interpolator(d3.interpolateRgbBasis(['#cccccd', 'red', 'firebrick']))
     .unknown('#ccc');
 
 let format_tooltip = (d) => {
-    return '<b>' + d.properties.name + `</b><br>${mode}: ` + get_cases(d)
+    return `<b>${d.properties.name}</b><br>${mode}: ${get_cases(d)}`
+};
+
+let highlight =  function() {
+    d3.select(this)
+        .attr('stroke', 'black')
+        .attr('vector-effect', 'non-scaling-stroke');
 };
 
 let display_tooltip = (d) => {
-    $('#tooltip').css({top: d3.event.pageY, left: d3.event.pageX});
-    d3.select('.tooltip').style('pointer-events', 'none');
-    d3.select('#tooltip').attr('data-original-title', format_tooltip(d));
-    $('[data-toggle="tooltip"]').tooltip('show');
+    if (center != d.properties.name) {
+        $('#tooltip').css({top: d3.event.pageY, left: d3.event.pageX});
+        d3.select('.tooltip').style('pointer-events', 'none');
+        d3.select('#tooltip').attr('data-original-title', format_tooltip(d));
+        $('[data-toggle="tooltip"]').tooltip('show');
+    }
 };
 
-let hide_tooltip = () => {
+let hide_tooltip = function(d) {
     $('[data-toggle="tooltip"]').tooltip('hide');
+    if (center != d.properties.name){
+        d3.select(this).attr('stroke', null);
+    }
 };
 
 let ramp = (color, n = 256) => {
@@ -75,8 +86,28 @@ let ramp = (color, n = 256) => {
     return canvas;
 };
 
-let zoom = (d) => {
-    let x, y, k;
+let popover = (country, d) => {
+    $('[data-toggle="tooltip"]').tooltip('hide');
+
+    d3.json(`/data/${d.properties.name}/${get_date()}`).then(datum => {
+        d3.select('#popover').attr('data-toggle', 'popover')
+        .attr('data-placement', 'right')
+        .attr('title', d.properties.name)
+        .attr('data-content', () => {
+            return `<b>Population (2018)</b>: ${datum['population'].toLocaleString()}`
+                + `<br><b>Cases:</b> ${datum['cases'].toLocaleString()}`
+                + `<br><b>Deaths:</b> ${datum['deaths'].toLocaleString()}`
+                + `<br><b>Recoveries:</b> ${datum['recoveries'].toLocaleString()}`
+        });
+
+        $(`[title="${d.properties.name}"]`).popover('show');
+    });
+};
+
+let zoom = function(d) {
+    $('[data-toggle="popover"]').popover('dispose');
+
+    let x, y, k, c_factor;
     if (center != d.properties.name) {
         center = d.properties.name;
         let centroid = path.centroid(d);
@@ -86,15 +117,25 @@ let zoom = (d) => {
         let width_scale = 0.8 * width / (bounds[1][0] - bounds[0][0]);
         let height_scale = 0.8 * height / (bounds[1][1] - bounds[0][1]);
         k = height_only.includes(center) ? height_scale : Math.min(width_scale, height_scale);
+        k *= 0.8;
+        c_factor = 0.35;
+        popover(d3.select(this), d);
     } else {
         center = null;
         x = width / 2;
         y = height / 2;
         k = 1;
+        c_factor = 0.5;
     }
+
+    d3.select('.countries').selectAll('path')
+        .attr('stroke', (d) => {
+            return center && center == d.properties.name? 'black':null;
+        });
+
     d3.select('.countries').transition()
         .duration(1000)
-        .attr('transform', `translate(${width / 2},${height / 2})scale(${k})translate(${-x},${-y})`);
+        .attr('transform', `translate(${width * c_factor},${height / 2})scale(${k})translate(${-x},${-y})`);
 };
 
 let render = () => {
@@ -115,6 +156,7 @@ let render = () => {
                 .attr('d', path)
                 .attr('fill', d => color(get_percent(d)))
                 .classed('has_data', d => color(get_percent(d)) == 'rgb(204, 204, 205)')
+                .on('mouseover', highlight)
                 .on('mousemove', display_tooltip)
                 .on('mouseleave', hide_tooltip)
                 .on('click', zoom);
@@ -215,9 +257,9 @@ let change_data = () => {
     data_full = d3.json(`/data/${mode.toLowerCase()}`).then(d => {
         data_full = d;
         if (mode == 'Cases') {
-            color.interpolator(d3.interpolateRgbBasis(['#cccccd', 'red', '#320000']));
+            color.interpolator(d3.interpolateRgbBasis(['#cccccd', 'red', 'firebrick']));
         } else if (mode == 'Deaths') {
-            color.interpolator(d3.interpolateRgbBasis(['#cccccd', 'purple', 'black']));
+            color.interpolator(d3.interpolateRgbBasis(['#cccccd', 'purple', 'indigo']));
         } else {
             color.interpolator(d3.interpolateRgbBasis(['#cccccd', 'lightblue', 'darkblue']));
         }

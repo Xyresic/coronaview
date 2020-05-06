@@ -17,13 +17,27 @@ def get_data(table):
         country = entry.country
         if date not in data:
             data[date] = {}
-        data[date][country.name] = [entry.amount/country.population, entry.amount]
+        data[date][country.name] = [entry.amount / country.population, entry.amount]
     return data
 
 
 @app.route('/', methods=['GET', 'POST'])
 def root():
     return render_template('index.html')
+
+
+@app.route('/data/<country>/<date>')
+def data(country, date):
+    entry = Countries.query.filter_by(name=country).first()
+
+    def find(query):
+        return query.filter_by(date=date).first().amount
+
+    json = {'population': entry.population,
+            'cases': find(entry.cases),
+            'deaths': find(entry.deaths),
+            'recoveries': find(entry.recovered)}
+    return jsonify(json)
 
 
 @app.route('/data/cases')

@@ -19,6 +19,14 @@
         #date-container {
             max-height: 5vh;
         }
+        #popover {
+            position: absolute;
+            top: 50%;
+            right: 30%;
+        }
+        .popover .arrow {
+            visibility: hidden;
+        }
     </style>
 {% endblock %}
 
@@ -40,6 +48,7 @@
         <div id="date-container" class="d-flex justify-content-center align-items-center mt-3"></div>
     </div>
     <i id="tooltip" data-toggle="tooltip" data-placement="top" data-animation="false" data-html="true"></i>
+    <i id="popover" data-toggle="popover" data-placement="right" data-html="true"></i>
 {% endblock %}
 
 {% block footer %}
