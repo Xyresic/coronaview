@@ -45,11 +45,17 @@ let get_cases = (d) => {
 
 let color = d3.scaleSequential()
     .domain([0, 0.002])
-    .interpolator(d3.interpolateRgbBasis(['#cccccd', 'red', '#320000']))
+    .interpolator(d3.interpolateRgbBasis(['#cccccd', 'red', 'firebrick']))
     .unknown('#ccc');
 
 let format_tooltip = (d) => {
     return '<b>' + d.properties.name + `</b><br>${mode}: ` + get_cases(d)
+};
+
+let highlight =  function() {
+    d3.select(this)
+        .attr('stroke', 'black')
+        .attr('vector-effect', 'non-scaling-stroke');
 };
 
 let display_tooltip = (d) => {
@@ -59,8 +65,11 @@ let display_tooltip = (d) => {
     $('[data-toggle="tooltip"]').tooltip('show');
 };
 
-let hide_tooltip = () => {
+let hide_tooltip = function(d) {
     $('[data-toggle="tooltip"]').tooltip('hide');
+    if (center != d.properties.name){
+        d3.select(this).attr('stroke', null);
+    }
 };
 
 let ramp = (color, n = 256) => {
@@ -92,6 +101,12 @@ let zoom = (d) => {
         y = height / 2;
         k = 1;
     }
+
+    d3.select('.countries').selectAll('path')
+        .attr('stroke', (d) => {
+            return center && center == d.properties.name? 'black':null;
+        });
+
     d3.select('.countries').transition()
         .duration(1000)
         .attr('transform', `translate(${width / 2},${height / 2})scale(${k})translate(${-x},${-y})`);
@@ -115,6 +130,7 @@ let render = () => {
                 .attr('d', path)
                 .attr('fill', d => color(get_percent(d)))
                 .classed('has_data', d => color(get_percent(d)) == 'rgb(204, 204, 205)')
+                .on('mouseover', highlight)
                 .on('mousemove', display_tooltip)
                 .on('mouseleave', hide_tooltip)
                 .on('click', zoom);
@@ -215,9 +231,9 @@ let change_data = () => {
     data_full = d3.json(`/data/${mode.toLowerCase()}`).then(d => {
         data_full = d;
         if (mode == 'Cases') {
-            color.interpolator(d3.interpolateRgbBasis(['#cccccd', 'red', '#320000']));
+            color.interpolator(d3.interpolateRgbBasis(['#cccccd', 'red', 'firebrick']));
         } else if (mode == 'Deaths') {
-            color.interpolator(d3.interpolateRgbBasis(['#cccccd', 'purple', 'black']));
+            color.interpolator(d3.interpolateRgbBasis(['#cccccd', 'purple', 'indigo']));
         } else {
             color.interpolator(d3.interpolateRgbBasis(['#cccccd', 'lightblue', 'darkblue']));
         }
