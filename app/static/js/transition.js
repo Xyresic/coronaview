@@ -59,10 +59,12 @@ let highlight =  function() {
 };
 
 let display_tooltip = (d) => {
-    $('#tooltip').css({top: d3.event.pageY, left: d3.event.pageX});
-    d3.select('.tooltip').style('pointer-events', 'none');
-    d3.select('#tooltip').attr('data-original-title', format_tooltip(d));
-    $('[data-toggle="tooltip"]').tooltip('show');
+    if (center != d.properties.name) {
+        $('#tooltip').css({top: d3.event.pageY, left: d3.event.pageX});
+        d3.select('.tooltip').style('pointer-events', 'none');
+        d3.select('#tooltip').attr('data-original-title', format_tooltip(d));
+        $('[data-toggle="tooltip"]').tooltip('show');
+    }
 };
 
 let hide_tooltip = function(d) {
@@ -84,7 +86,19 @@ let ramp = (color, n = 256) => {
     return canvas;
 };
 
-let zoom = (d) => {
+let popover = (country, d) => {
+    $('[data-toggle="tooltip"]').tooltip('hide');
+
+    d3.select('#popover').attr('data-toggle', 'popover')
+        .attr('data-placement', 'right')
+        .attr('title', d.properties.name)
+        .attr('data-content', 'Test');
+    $(`[title="${d.properties.name}"]`).popover('show');
+};
+
+let zoom = function(d) {
+    $('[data-toggle="popover"]').popover('dispose');
+
     let x, y, k;
     if (center != d.properties.name) {
         center = d.properties.name;
@@ -95,6 +109,8 @@ let zoom = (d) => {
         let width_scale = 0.8 * width / (bounds[1][0] - bounds[0][0]);
         let height_scale = 0.8 * height / (bounds[1][1] - bounds[0][1]);
         k = height_only.includes(center) ? height_scale : Math.min(width_scale, height_scale);
+
+        popover(d3.select(this), d);
     } else {
         center = null;
         x = width / 2;
