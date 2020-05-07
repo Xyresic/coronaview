@@ -40,13 +40,16 @@ EricL -- 2020-04-30 11:20
 JosephL -- 2020-04-30 13:12
     - Discussed what kind of data we wanted with the team
     - Organized Flask App
-    
+
 EricL -- 2020-05-01 15:40
     - Added db building script
     - Ported data to database
 
 EricL -- 2020-05-01 19:40
     - Connected database to D3
+
+JosephL -- 2020-05-02 9:12
+    - reviewed Eric's code and asked questions and what things meant
 
 JosephL -- 2020-05-02 15:13
     - Began researching economic databases that we can use to show economic impact
@@ -75,6 +78,9 @@ EricL -- 2020-05-06 15:10
     - Changed database relationships to by dynamic
     - Added content to popovers
 
-JosephL -- 2020-05-6 18:19
+JosephL -- 2020-05-06 18:19
     - searched for more economic apis/databases related to COVID-19
     - implemented pause button
+
+JosephL -- 2020-05-07
+    - added speed bar on the front end
