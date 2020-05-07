@@ -9,9 +9,9 @@ class Countries(db.Model):
     code = db.Column(db.String(3), nullable=False)
     population = db.Column(db.Integer)
 
-    cases = db.relationship('Cases', backref='country')
-    deaths = db.relationship('Deaths', backref='country')
-    recovered = db.relationship('Recovered', backref='country')
+    cases = db.relationship('Cases', backref='country', lazy='dynamic')
+    deaths = db.relationship('Deaths', backref='country', lazy='dynamic')
+    recovered = db.relationship('Recovered', backref='country', lazy='dynamic')
 
     def __init__(self, code, population):
         self.code = code
