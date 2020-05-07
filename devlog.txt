@@ -60,8 +60,6 @@ EricL -- 2020-05-04 19:25
     - Changed render button to a selector
     - Implemented switching data sets with selector
     - Fixed tooltip errors
-<<<<<<< HEAD
-=======
 
 EricL -- 2020-05-05 10:41
     - Separated svg elements to prevent overlap
@@ -72,4 +70,3 @@ EricL -- 2020-05-06 15:10
     - Added popovers
     - Changed database relationships to by dynamic
     - Added content to popovers
->>>>>>> 1aff3a58461b75c591911b8897d3e896b66f9f4b
