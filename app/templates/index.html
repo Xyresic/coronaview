@@ -27,6 +27,17 @@
         .popover .arrow {
             visibility: hidden;
         }
+        .fast {
+          padding-bottom: 6px;
+          padding-left: 5px;
+        }
+        .slow {
+          padding-bottom: 6px;
+          padding-right: 4px;
+        }
+        .speed{
+          width: 30%;
+        }
     </style>
 {% endblock %}
 
@@ -41,11 +52,18 @@
                 <option>Deaths</option>
                 <option>Recoveries</option>
             </select>
-            <input type="range" class="custom-range" value="0" step="1" id="slider" disabled>
+            <div class="font-weight-bold slow">Slow</div>
+            <input type="range" class="custom-range speed" value="0" min="0" max="2" step="1" id="speed_slider">
+            <div class="font-weight-bold fast">Fast</div>
             <button type="button" class="btn btn-outline-primary ml-3" id="resume" disabled>Play</button>
             <button type="button" class="btn btn-outline-primary ml-3" id="pause" disabled>Pause</button>
         </div>
         <div id="map" class="d-flex justify-content-center align-items-center mt-3"></div>
+        <div class = "row">
+          <div class = "col-8 align-items-center mx-auto">
+           <input type="range" class="custom-range" value="0" step="1" id="slider" disabled>
+          </div>
+        </div><br>
         <div id="date-container" class="d-flex justify-content-center align-items-center mt-3"></div>
     </div>
     <i id="tooltip" data-toggle="tooltip" data-placement="top" data-animation="false" data-html="true"></i>
