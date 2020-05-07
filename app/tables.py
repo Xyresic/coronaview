@@ -62,3 +62,6 @@ class Recovered(db.Model):
         self.amount = amount
         self.country_id = country_id
         self.cases_id = cases_id
+
+class Economy(db.Model):
+    id = db.Column(db.Integer, primary_key=True)

@@ -1,6 +1,6 @@
 import os, sys, csv
 from flask import Flask, render_template, jsonify
-from tables import db, Countries, Cases, Deaths, Recovered
+from tables import db, Countries, Cases, Deaths, Recovered, Economy
 
 app = Flask(__name__)
 app.secret_key = os.urandom(32)
@@ -54,6 +54,10 @@ def deaths():
 def recoveries():
     return jsonify(get_data(Recovered))
 
+@app.route('/data/economy')
+def economy():
+    return "insert economy data here"
+    # return jsonify(get_data(Economy))
 
 if __name__ == '__main__':
     app.debug = True
