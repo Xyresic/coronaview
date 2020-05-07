@@ -203,8 +203,8 @@ let render = () => {
             .classed('date', true);
     });
 };
+
 let pause = () => {
-    console.log("pausing")
     date = new Date('2020-01-22');
     date.setDate(date.getDate() + parseInt(slider.value));
     d3.select('.date').text(get_date_formatted());
@@ -217,15 +217,14 @@ let pause = () => {
         pause_btn.setAttribute('disabled', '');
         pause_btn.style.pointerEvents = 'none';
     } else {
-        console.log("a")
         resume_btn.setAttribute('disabled', '');
         resume_btn.style.pointerEvents = 'none';
         resume_btn.setAttribute('disabled', '');
         resume_btn.style.pointerEvents = 'none';
     }
 };
+
 let advance = () => {
-    console.log("advance")
     resume_btn.setAttribute('disabled', '');
     resume_btn.style.pointerEvents = 'none';
     pause_btn.removeAttribute('disabled');
@@ -257,7 +256,6 @@ let advance = () => {
 };
 
 let update = () => {
-    console.log("updating")
     date = new Date('2020-01-22');
     date.setDate(date.getDate() + parseInt(slider.value));
     d3.select('.date').text(get_date_formatted());
@@ -295,7 +293,7 @@ let change_data = () => {
         render();
     });
 };
-console.log("HELLO")
+
 resume_btn.style.pointerEvents = 'none';
 $('#selector').selectpicker('render');
 d3.select('#map').append('svg')
