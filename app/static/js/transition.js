@@ -41,7 +41,7 @@ let get_cases = (d) => {
     let data_dated = data_full[get_date()];
     if (data_dated !== undefined && data_dated.hasOwnProperty(d.properties.name)) {
         return data_dated[d.properties.name][1].toLocaleString();
-    } else return 0;
+    } else return '<i>unknown</i>';
 };
 
 let color = d3.scaleSequential()
@@ -90,19 +90,26 @@ let ramp = (color, n = 256) => {
 let popover = (country, d) => {
     $('[data-toggle="tooltip"]').tooltip('hide');
 
-    d3.json(`/data/${d.properties.name}/${get_date()}`).then(datum => {
-        d3.select('#popover').attr('data-toggle', 'popover')
-        .attr('data-placement', 'right')
-        .attr('title', d.properties.name)
-        .attr('data-content', () => {
-            return `<b>Population (2018)</b>: ${datum['population'].toLocaleString()}`
-                + `<br><b>Cases:</b> ${datum['cases'].toLocaleString()}`
-                + `<br><b>Deaths:</b> ${datum['deaths'].toLocaleString()}`
-                + `<br><b>Recoveries:</b> ${datum['recoveries'].toLocaleString()}`
+    if (country.attr('class') != null) {
+        d3.json(`/data/${d.properties.name}/${get_date()}`).then(datum => {
+            d3.select('#popover').attr('data-toggle', 'popover')
+                .attr('data-placement', 'right')
+                .attr('title', d.properties.name)
+                .attr('data-content', () => {
+                    return `<b>Population (2018)</b>: ${datum['population'].toLocaleString()}`
+                        + `<br><b>Cases:</b> ${datum['cases'].toLocaleString()}`
+                        + `<br><b>Deaths:</b> ${datum['deaths'].toLocaleString()}`
+                        + `<br><b>Recoveries:</b> ${datum['recoveries'].toLocaleString()}`
+                });
         });
+    } else {
+        d3.select('#popover').attr('data-toggle', 'popover')
+            .attr('data-placement', 'right')
+            .attr('title', d.properties.name)
+            .attr('data-content', 'Data unavailable.');
+    }
 
-        $(`[title="${d.properties.name}"]`).popover('show');
-    });
+    $(`[title="${d.properties.name}"]`).popover('show');
 };
 
 let zoom = function(d) {
