@@ -101,15 +101,15 @@ let popover = (country, d) => {
                         + `<br><b>Deaths:</b> ${datum['deaths'].toLocaleString()}`
                         + `<br><b>Recoveries:</b> ${datum['recoveries'].toLocaleString()}`
                 });
+            $(`[title="${d.properties.name}"]`).popover('show');
         });
     } else {
         d3.select('#popover').attr('data-toggle', 'popover')
             .attr('data-placement', 'right')
             .attr('title', d.properties.name)
             .attr('data-content', 'Data unavailable.');
+        $(`[title="${d.properties.name}"]`).popover('show');
     }
-
-    $(`[title="${d.properties.name}"]`).popover('show');
 };
 
 let zoom = function(d) {
@@ -219,17 +219,10 @@ let pause = () => {
 
     if (timer != null) timer.stop();
 
-    if (parseInt(slider.value) < 100) {
-        resume_btn.removeAttribute('disabled');
-        resume_btn.style.pointerEvents = null;
-        pause_btn.setAttribute('disabled', '');
-        pause_btn.style.pointerEvents = 'none';
-    } else {
-        resume_btn.setAttribute('disabled', '');
-        resume_btn.style.pointerEvents = 'none';
-        resume_btn.setAttribute('disabled', '');
-        resume_btn.style.pointerEvents = 'none';
-    }
+    resume_btn.removeAttribute('disabled');
+    resume_btn.style.pointerEvents = null;
+    pause_btn.setAttribute('disabled', '');
+    pause_btn.style.pointerEvents = 'none';
 };
 
 let advance = () => {
@@ -259,7 +252,11 @@ let advance = () => {
             .duration(100)
             .attr('fill', d => color(get_percent(d)));
 
-        if (elapsed > 150 * (100 - slider_pos)) timer.stop();
+        if (elapsed > 150 * (100 - slider_pos)) {
+            timer.stop();
+            pause_btn.setAttribute('disabled', '');
+            pause_btn.style.pointerEvents = 'none';
+        }
     }, 150);
 };
 
@@ -273,13 +270,9 @@ let update = () => {
     if (parseInt(slider.value) < 100) {
         resume_btn.removeAttribute('disabled');
         resume_btn.style.pointerEvents = null;
-        pause_btn.setAttribute('disabled', '');
-        pause_btn.style.pointerEvents = 'none';
     } else {
         resume_btn.setAttribute('disabled', '');
         resume_btn.style.pointerEvents = 'none';
-        pause_btn.setAttribute('disabled', '');
-        pause_btn.style.pointerEvents = 'none';
     }
 
     d3.selectAll('.has_data').transition()
