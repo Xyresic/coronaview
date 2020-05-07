@@ -6,7 +6,7 @@ let slider = document.getElementById('slider');
 let map_url = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-10m.json';
 let width = 1000;
 let height = 500;
-let date, timer, center;
+let date, timer, center, range;
 let height_only = ['United States of America', 'France', 'Russia', 'Fiji'];
 let mode = 'Cases';
 
@@ -26,6 +26,8 @@ let data_full = d3.json('/data/cases').then(d => {
     data_full = d;
     $('.selectpicker').prop('disabled', false);
     $('.selectpicker').selectpicker('refresh');
+    range = Object.keys(data_full).length;
+    slider.setAttribute('max', range);
     slider.removeAttribute('disabled');
     render();
 });
@@ -252,7 +254,7 @@ let advance = () => {
             .duration(100)
             .attr('fill', d => color(get_percent(d)));
 
-        if (elapsed > 150 * (100 - slider_pos)) {
+        if (elapsed > 150 * (range - slider_pos)) {
             timer.stop();
             pause_btn.setAttribute('disabled', '');
             pause_btn.style.pointerEvents = 'none';
@@ -267,7 +269,7 @@ let update = () => {
 
     if (timer != null) timer.stop();
 
-    if (parseInt(slider.value) < 100) {
+    if (parseInt(slider.value) < range) {
         resume_btn.removeAttribute('disabled');
         resume_btn.style.pointerEvents = null;
     } else {
