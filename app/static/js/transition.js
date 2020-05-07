@@ -1,5 +1,6 @@
 let selector = document.getElementById('selector');
-let trans_btn = document.getElementById('transition');
+let resume_btn = document.getElementById('resume');
+let pause_btn = document.getElementById('pause');
 let slider = document.getElementById('slider');
 
 let map_url = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-10m.json';
@@ -142,8 +143,8 @@ let render = () => {
     if (timer != null) timer.stop();
     date = new Date('2020-01-22');
     d3.selectAll('svg *').remove();
-    trans_btn.removeAttribute('disabled');
-    trans_btn.style.pointerEvents = null;
+    resume_btn.removeAttribute('disabled');
+    resume_btn.style.pointerEvents = null;
     slider.value = 0;
 
     map_data.then(d => {
@@ -204,8 +205,8 @@ let render = () => {
 };
 
 let advance = () => {
-    trans_btn.setAttribute('disabled', '');
-    trans_btn.style.pointerEvents = 'none';
+    resume_btn.setAttribute('disabled', '');
+    resume_btn.style.pointerEvents = 'none';
 
     let slider_pos = parseInt(slider.value)
 
@@ -240,11 +241,11 @@ let update = () => {
     if (timer != null) timer.stop();
 
     if (parseInt(slider.value) < 100) {
-        trans_btn.removeAttribute('disabled');
-        trans_btn.style.pointerEvents = null;
+        resume_btn.removeAttribute('disabled');
+        resume_btn.style.pointerEvents = null;
     } else {
-        trans_btn.setAttribute('disabled', '');
-        trans_btn.style.pointerEvents = 'none';
+        resume_btn.setAttribute('disabled', '');
+        resume_btn.style.pointerEvents = 'none';
     }
 
     d3.selectAll('.has_data').transition()
@@ -267,7 +268,7 @@ let change_data = () => {
     });
 };
 
-trans_btn.style.pointerEvents = 'none';
+resume_btn.style.pointerEvents = 'none';
 $('#selector').selectpicker('render');
 d3.select('#map').append('svg')
     .attr('id', 'scale')
@@ -283,6 +284,6 @@ d3.select('#map').append('svg')
 d3.select('#date-container').append('svg')
     .attr('id', 'date');
 
-trans_btn.addEventListener('click', advance);
+resume_btn.addEventListener('click', advance);
 slider.addEventListener('input', update);
 selector.addEventListener('change', change_data);
