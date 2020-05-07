@@ -6,7 +6,7 @@ let slider = document.getElementById('slider');
 let map_url = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-10m.json';
 let width = 1000;
 let height = 500;
-let date, timer, center;
+let date, timer, center, range;
 let height_only = ['United States of America', 'France', 'Russia', 'Fiji'];
 let mode = 'Cases';
 
@@ -26,6 +26,8 @@ let data_full = d3.json('/data/cases').then(d => {
     data_full = d;
     $('.selectpicker').prop('disabled', false);
     $('.selectpicker').selectpicker('refresh');
+    range = Object.keys(data_full).length;
+    slider.setAttribute('max', range);
     slider.removeAttribute('disabled');
     render();
 });
@@ -41,7 +43,7 @@ let get_cases = (d) => {
     let data_dated = data_full[get_date()];
     if (data_dated !== undefined && data_dated.hasOwnProperty(d.properties.name)) {
         return data_dated[d.properties.name][1].toLocaleString();
-    } else return 0;
+    } else return '<i>unknown</i>';
 };
 
 let color = d3.scaleSequential()
@@ -90,23 +92,32 @@ let ramp = (color, n = 256) => {
 let popover = (country, d) => {
     $('[data-toggle="tooltip"]').tooltip('hide');
 
-    d3.json(`/data/${d.properties.name}/${get_date()}`).then(datum => {
-        d3.select('#popover').attr('data-toggle', 'popover')
-        .attr('data-placement', 'right')
-        .attr('title', d.properties.name)
-        .attr('data-content', () => {
-            return `<b>Population (2018)</b>: ${datum['population'].toLocaleString()}`
-                + `<br><b>Cases:</b> ${datum['cases'].toLocaleString()}`
-                + `<br><b>Deaths:</b> ${datum['deaths'].toLocaleString()}`
-                + `<br><b>Recoveries:</b> ${datum['recoveries'].toLocaleString()}`
+    if (country.attr('class') != null) {
+        d3.json(`/data/${d.properties.name}/${get_date()}`).then(datum => {
+            d3.select('#popover').attr('data-toggle', 'popover')
+                .attr('data-placement', 'right')
+                .attr('title', d.properties.name)
+                .attr('data-content', () => {
+                    return `<b>Population (2018)</b>: ${datum['population'].toLocaleString()}`
+                        + `<br><b>Cases:</b> ${datum['cases'].toLocaleString()}`
+                        + `<br><b>Deaths:</b> ${datum['deaths'].toLocaleString()}`
+                        + `<br><b>Recoveries:</b> ${datum['recoveries'].toLocaleString()}`
+                });
+            $(`[title="${d.properties.name}"]`).popover('show');
         });
-
+    } else {
+        d3.select('#popover').attr('data-toggle', 'popover')
+            .attr('data-placement', 'right')
+            .attr('title', d.properties.name)
+            .attr('data-content', 'Data unavailable.');
         $(`[title="${d.properties.name}"]`).popover('show');
-    });
+    }
 };
 
 let zoom = function(d) {
     $('[data-toggle="popover"]').popover('dispose');
+    let bbox = d3.select('#main').node().getBoundingClientRect();
+    $('#popover').css({top: bbox.top+bbox.height/2+window.scrollY, left: bbox.right-bbox.width*0.1-220});
 
     let x, y, k, c_factor;
     if (center != d.properties.name) {
@@ -118,7 +129,6 @@ let zoom = function(d) {
         let width_scale = 0.8 * width / (bounds[1][0] - bounds[0][0]);
         let height_scale = 0.8 * height / (bounds[1][1] - bounds[0][1]);
         k = height_only.includes(center) ? height_scale : Math.min(width_scale, height_scale);
-        k *= 0.8;
         c_factor = 0.35;
         popover(d3.select(this), d);
     } else {
@@ -211,17 +221,10 @@ let pause = () => {
 
     if (timer != null) timer.stop();
 
-    if (parseInt(slider.value) < 100) {
-        resume_btn.removeAttribute('disabled');
-        resume_btn.style.pointerEvents = null;
-        pause_btn.setAttribute('disabled', '');
-        pause_btn.style.pointerEvents = 'none';
-    } else {
-        resume_btn.setAttribute('disabled', '');
-        resume_btn.style.pointerEvents = 'none';
-        resume_btn.setAttribute('disabled', '');
-        resume_btn.style.pointerEvents = 'none';
-    }
+    resume_btn.removeAttribute('disabled');
+    resume_btn.style.pointerEvents = null;
+    pause_btn.setAttribute('disabled', '');
+    pause_btn.style.pointerEvents = 'none';
 };
 
 let advance = () => {
@@ -251,7 +254,11 @@ let advance = () => {
             .duration(100)
             .attr('fill', d => color(get_percent(d)));
 
-        if (elapsed > 150 * (100 - slider_pos)) timer.stop();
+        if (elapsed > 150 * (range - slider_pos)) {
+            timer.stop();
+            pause_btn.setAttribute('disabled', '');
+            pause_btn.style.pointerEvents = 'none';
+        }
     }, 150);
 };
 
@@ -262,16 +269,12 @@ let update = () => {
 
     if (timer != null) timer.stop();
 
-    if (parseInt(slider.value) < 100) {
+    if (parseInt(slider.value) < range) {
         resume_btn.removeAttribute('disabled');
         resume_btn.style.pointerEvents = null;
-        pause_btn.setAttribute('disabled', '');
-        pause_btn.style.pointerEvents = 'none';
     } else {
         resume_btn.setAttribute('disabled', '');
         resume_btn.style.pointerEvents = 'none';
-        pause_btn.setAttribute('disabled', '');
-        pause_btn.style.pointerEvents = 'none';
     }
 
     d3.selectAll('.has_data').transition()
