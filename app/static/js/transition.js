@@ -1,5 +1,6 @@
 let selector = document.getElementById('selector');
-let trans_btn = document.getElementById('transition');
+let resume_btn = document.getElementById('resume');
+let pause_btn = document.getElementById('pause');
 let slider = document.getElementById('slider');
 
 let map_url = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-10m.json';
@@ -142,8 +143,8 @@ let render = () => {
     if (timer != null) timer.stop();
     date = new Date('2020-01-22');
     d3.selectAll('svg *').remove();
-    trans_btn.removeAttribute('disabled');
-    trans_btn.style.pointerEvents = null;
+    resume_btn.removeAttribute('disabled');
+    resume_btn.style.pointerEvents = null;
     slider.value = 0;
 
     map_data.then(d => {
@@ -202,10 +203,33 @@ let render = () => {
             .classed('date', true);
     });
 };
+let pause = () => {
+    console.log("pausing")
+    date = new Date('2020-01-22');
+    date.setDate(date.getDate() + parseInt(slider.value));
+    d3.select('.date').text(get_date_formatted());
 
+    if (timer != null) timer.stop();
+
+    if (parseInt(slider.value) < 100) {
+        resume_btn.removeAttribute('disabled');
+        resume_btn.style.pointerEvents = null;
+        pause_btn.setAttribute('disabled', '');
+        pause_btn.style.pointerEvents = 'none';
+    } else {
+        console.log("a")
+        resume_btn.setAttribute('disabled', '');
+        resume_btn.style.pointerEvents = 'none';
+        resume_btn.setAttribute('disabled', '');
+        resume_btn.style.pointerEvents = 'none';
+    }
+};
 let advance = () => {
-    trans_btn.setAttribute('disabled', '');
-    trans_btn.style.pointerEvents = 'none';
+    console.log("advance")
+    resume_btn.setAttribute('disabled', '');
+    resume_btn.style.pointerEvents = 'none';
+    pause_btn.removeAttribute('disabled');
+    pause_btn.style.pointerEvents = null;
 
     let slider_pos = parseInt(slider.value)
 
@@ -233,6 +257,7 @@ let advance = () => {
 };
 
 let update = () => {
+    console.log("updating")
     date = new Date('2020-01-22');
     date.setDate(date.getDate() + parseInt(slider.value));
     d3.select('.date').text(get_date_formatted());
@@ -240,11 +265,15 @@ let update = () => {
     if (timer != null) timer.stop();
 
     if (parseInt(slider.value) < 100) {
-        trans_btn.removeAttribute('disabled');
-        trans_btn.style.pointerEvents = null;
+        resume_btn.removeAttribute('disabled');
+        resume_btn.style.pointerEvents = null;
+        pause_btn.setAttribute('disabled', '');
+        pause_btn.style.pointerEvents = 'none';
     } else {
-        trans_btn.setAttribute('disabled', '');
-        trans_btn.style.pointerEvents = 'none';
+        resume_btn.setAttribute('disabled', '');
+        resume_btn.style.pointerEvents = 'none';
+        pause_btn.setAttribute('disabled', '');
+        pause_btn.style.pointerEvents = 'none';
     }
 
     d3.selectAll('.has_data').transition()
@@ -266,8 +295,8 @@ let change_data = () => {
         render();
     });
 };
-
-trans_btn.style.pointerEvents = 'none';
+console.log("HELLO")
+resume_btn.style.pointerEvents = 'none';
 $('#selector').selectpicker('render');
 d3.select('#map').append('svg')
     .attr('id', 'scale')
@@ -283,6 +312,7 @@ d3.select('#map').append('svg')
 d3.select('#date-container').append('svg')
     .attr('id', 'date');
 
-trans_btn.addEventListener('click', advance);
+resume_btn.addEventListener('click', advance);
+pause_btn.addEventListener('click', pause)
 slider.addEventListener('input', update);
 selector.addEventListener('change', change_data);
