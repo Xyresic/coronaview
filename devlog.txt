@@ -1,12 +1,12 @@
 The SIMPsons -- 2020-04-27 17:37
     - Drafted design doc
-  
+
 EricL -- 2020-04-29 09:05
     - Loaded previous work as template
     - Added flag
     - Added gitignore
     - Fixed file retrieval due to new structure
-  
+
 EricL -- 2020-04-29 20:15
     - Implemented map zooming
 
@@ -37,6 +37,10 @@ EricL -- 2020-04-30 08:40
 EricL -- 2020-04-30 11:20
     - Added database models
 
+JosephL -- 2020-04-30 13:12
+    - Discussed what kind of data we wanted with the team
+    - Organized Flask App
+    
 EricL -- 2020-05-01 15:40
     - Added db building script
     - Ported data to database
@@ -44,10 +48,16 @@ EricL -- 2020-05-01 15:40
 EricL -- 2020-05-01 19:40
     - Connected database to D3
 
+JosephL -- 2020-05-02 15:13
+    - Began researching economic databases that we can use to show economic impact
+
 EricL -- 2020-05-03 14:22
     - Implemented slider
     - Fixed rendering before promise fulfillment
     - Update play button for slider compatibility
+
+JosephL -- 2020-05-4 13:15
+    - started downloading the databases and researched d3 ways to display the data
 
 EricL -- 2020-05-04 19:25
     - Fixed slider not pausing animation
@@ -64,3 +74,7 @@ EricL -- 2020-05-06 15:10
     - Added popovers
     - Changed database relationships to by dynamic
     - Added content to popovers
+
+JosephL -- 2020-05-6 18:19
+    - searched for more economic apis/databases related to COVID-19
+    - implemented pause button
