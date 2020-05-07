@@ -37,6 +37,10 @@ EricL -- 2020-04-30 08:40
 EricL -- 2020-04-30 11:20
     - Added database models
 
+JosephL -- 2020-04-30 13:12
+    - Discussed what kind of data we wanted with the team
+    - Organized Flask App
+    
 EricL -- 2020-05-01 15:40
     - Added db building script
     - Ported data to database
@@ -70,3 +74,7 @@ EricL -- 2020-05-06 15:10
     - Added popovers
     - Changed database relationships to by dynamic
     - Added content to popovers
+
+JosephL -- 2020-05-6 18:19
+    - searched for more economic apis/databases related to COVID-19
+    - implemented pause button
