@@ -107,6 +107,8 @@ let popover = (country, d) => {
 
 let zoom = function(d) {
     $('[data-toggle="popover"]').popover('dispose');
+    let bbox = d3.select('#main').node().getBoundingClientRect();
+    $('#popover').css({top: bbox.top+bbox.height/2+window.scrollY, left: bbox.right-bbox.width*0.1-220});
 
     let x, y, k, c_factor;
     if (center != d.properties.name) {
@@ -118,7 +120,6 @@ let zoom = function(d) {
         let width_scale = 0.8 * width / (bounds[1][0] - bounds[0][0]);
         let height_scale = 0.8 * height / (bounds[1][1] - bounds[0][1]);
         k = height_only.includes(center) ? height_scale : Math.min(width_scale, height_scale);
-        k *= 0.8;
         c_factor = 0.35;
         popover(d3.select(this), d);
     } else {
