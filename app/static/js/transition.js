@@ -203,10 +203,33 @@ let render = () => {
             .classed('date', true);
     });
 };
+let pause = () => {
+    console.log("pausing")
+    date = new Date('2020-01-22');
+    date.setDate(date.getDate() + parseInt(slider.value));
+    d3.select('.date').text(get_date_formatted());
 
+    if (timer != null) timer.stop();
+
+    if (parseInt(slider.value) < 100) {
+        resume_btn.removeAttribute('disabled');
+        resume_btn.style.pointerEvents = null;
+        pause_btn.setAttribute('disabled', '');
+        pause_btn.style.pointerEvents = 'none';
+    } else {
+        console.log("a")
+        resume_btn.setAttribute('disabled', '');
+        resume_btn.style.pointerEvents = 'none';
+        resume_btn.setAttribute('disabled', '');
+        resume_btn.style.pointerEvents = 'none';
+    }
+};
 let advance = () => {
+    console.log("advance")
     resume_btn.setAttribute('disabled', '');
     resume_btn.style.pointerEvents = 'none';
+    pause_btn.removeAttribute('disabled');
+    pause_btn.style.pointerEvents = null;
 
     let slider_pos = parseInt(slider.value)
 
@@ -234,6 +257,7 @@ let advance = () => {
 };
 
 let update = () => {
+    console.log("updating")
     date = new Date('2020-01-22');
     date.setDate(date.getDate() + parseInt(slider.value));
     d3.select('.date').text(get_date_formatted());
@@ -243,9 +267,13 @@ let update = () => {
     if (parseInt(slider.value) < 100) {
         resume_btn.removeAttribute('disabled');
         resume_btn.style.pointerEvents = null;
+        pause_btn.setAttribute('disabled', '');
+        pause_btn.style.pointerEvents = 'none';
     } else {
         resume_btn.setAttribute('disabled', '');
         resume_btn.style.pointerEvents = 'none';
+        pause_btn.setAttribute('disabled', '');
+        pause_btn.style.pointerEvents = 'none';
     }
 
     d3.selectAll('.has_data').transition()
@@ -267,7 +295,7 @@ let change_data = () => {
         render();
     });
 };
-
+console.log("HELLO")
 resume_btn.style.pointerEvents = 'none';
 $('#selector').selectpicker('render');
 d3.select('#map').append('svg')
@@ -285,5 +313,6 @@ d3.select('#date-container').append('svg')
     .attr('id', 'date');
 
 resume_btn.addEventListener('click', advance);
+pause_btn.addEventListener('click', pause)
 slider.addEventListener('input', update);
 selector.addEventListener('change', change_data);
