@@ -277,6 +277,9 @@ let update = () => {
         resume_btn.style.pointerEvents = 'none';
     }
 
+    let focus = d3.select('.has_data[stroke="black"]');
+    if (focus.node() != null) popover(focus, focus.data()[0]);
+
     d3.selectAll('.has_data').transition()
             .duration(100)
             .attr('fill', d => color(get_percent(d)));
