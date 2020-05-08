@@ -250,6 +250,9 @@ let advance = () => {
 
         slider.value = parseInt(slider.value) + 1;
 
+        let focus = d3.select('.has_data[stroke="black"]');
+        if (focus.node() != null) popover(focus, focus.data()[0]);
+
         d3.selectAll('.has_data').transition()
             .duration(100)
             .attr('fill', d => color(get_percent(d)));
