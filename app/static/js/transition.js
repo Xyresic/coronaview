@@ -93,17 +93,28 @@ let popover = (country, d) => {
     $('[data-toggle="tooltip"]').tooltip('hide');
 
     if (country.attr('class') != null) {
-        d3.json(`/data/${d.properties.name}/${get_date()}`).then(datum => {
-            d3.select('#popover').attr('data-toggle', 'popover')
+        d3.json(`/data/${d.properties.name}`).then(datum => {
+            d3.select('#popover').datum(datum)
+                .attr('data-toggle', 'popover')
                 .attr('data-placement', 'right')
                 .attr('title', d.properties.name)
                 .attr('data-content', () => {
+                    let index = Math.floor((date - new Date('2020-01-22'))/(1000*60*60*24));
                     return `<b>Population (2018)</b>: ${datum['population'].toLocaleString()}`
-                        + `<br><b>Cases:</b> ${datum['cases'].toLocaleString()}`
-                        + `<br><b>Deaths:</b> ${datum['deaths'].toLocaleString()}`
-                        + `<br><b>Recoveries:</b> ${datum['recoveries'].toLocaleString()}`
+                        + `<br><b>Cases:</b> ${datum['cases'][index].toLocaleString()}`
+                        + `<br><b>Deaths:</b> ${datum['deaths'][index].toLocaleString()}`
+                        + `<br><b>Recoveries:</b> ${datum['recoveries'][index].toLocaleString()}`
                 });
             $(`[title="${d.properties.name}"]`).popover('show');
+            let data = d3.select('#popover').datum();
+            let y = d3.scaleLinear().domain([0, d3.max(data['cases'])]).range([0,50])
+            d3.select('.popover-body').append('svg').append('g')
+                .attr('fill', 'red')
+                .selectAll('rect').data(data['cases']).join('rect')
+                    .attr("x", (d, i) => i)
+                    .attr("width", 100/range)
+                    .attr('y', d => 50-y(d))
+                    .attr('height', d => y(d));
         });
     } else {
         d3.select('#popover').attr('data-toggle', 'popover')
