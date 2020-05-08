@@ -103,29 +103,51 @@ let popover = (country, d) => {
                     return `<b>Population (2018)</b>: ${datum['population'].toLocaleString()}`
                         + `<br><b>Cases:</b> ${datum['cases'][index].toLocaleString()}`
                         + `<br><b>Deaths:</b> ${datum['deaths'][index].toLocaleString()}`
-                        + `<br><b>Recoveries:</b> ${datum['recoveries'][index].toLocaleString()}`;
+                        + `<br><b>Recoveries:</b> ${datum['recoveries'][index].toLocaleString()}` + '<hr>';
                 });
             $(`[title="${d.properties.name}"]`).popover('show');
-            let draw_graph = (dataset, fill_color, adjustment = 0) => {
-                if (d3.max(datum[dataset]) != 0) {
-                    let y = d3.scaleLinear().domain([0, d3.max(datum[dataset])]).range([0, 50]);
-                    graphs.append('g')
-                        .attr('fill', fill_color)
-                        .selectAll('rect').data(datum[dataset]).join('rect')
-                        .attr("x", (d, i) => i)
-                        .attr("width", 80 / range)
-                        .attr('y', d => 50 - y(d))
-                        .attr('height', d => y(d))
-                        .attr('transform', `translate(${adjustment - 40},0)`);
-                }
-            };
-            let graphs = d3.select('.popover-body').append('svg')
+
+            let body = d3.select('.popover-body');
+            let total_graphs = body.append('svg')
                 .attr('width', 250)
-                .attr('height', 75)
-                .style('margin', '1vh');
-            draw_graph('cases', 'red');
-            draw_graph('deaths', 'purple', 80);
-            draw_graph('recoveries', 'blue', 160);
+                .attr('height', 50);
+            body.append('hr');
+            let new_graphs = body.append('svg')
+                .attr('width', 250)
+                .attr('height', 50);
+            body.append('hr');
+            let growth = body.append('svg')
+                .attr('width', 250)
+                .attr('height', 50);
+
+            let pairwise_diff = (prev => val => {
+                let diff = Math.abs(val-prev);
+                prev = val;
+                return diff;
+            });
+            let draw_graph = (svg, data, fill_color, adjustment) => {
+                let y = d3.scaleLinear().domain([0, d3.max(data)]).range([0, 50]);
+                svg.append('g')
+                    .attr('fill', fill_color)
+                    .style('width', 80)
+                    .selectAll('rect').data(data).join('rect')
+                    .attr("x", (d, i) => i * 80 / range)
+                    .attr("width", 80 / range)
+                    .attr('y', d => 50 - y(d))
+                    .attr('height', d => y(d))
+                    .attr('transform', `translate(${adjustment},0)`);
+            };
+            let check = (dataset, fill_color, adjustment = 0) => {
+                let data = datum[dataset]
+                if(d3.max(data) != 0) {
+                    draw_graph(total_graphs, data, fill_color, adjustment);
+                    draw_graph(new_graphs, data.map(pairwise_diff(0)), fill_color, adjustment);
+                }
+            }
+
+            check('cases', 'red');
+            check('deaths', 'purple', 80);
+            check('recoveries', 'blue', 160);
         });
     } else {
         d3.select('#popover').attr('data-toggle', 'popover')
