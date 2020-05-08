@@ -103,18 +103,29 @@ let popover = (country, d) => {
                     return `<b>Population (2018)</b>: ${datum['population'].toLocaleString()}`
                         + `<br><b>Cases:</b> ${datum['cases'][index].toLocaleString()}`
                         + `<br><b>Deaths:</b> ${datum['deaths'][index].toLocaleString()}`
-                        + `<br><b>Recoveries:</b> ${datum['recoveries'][index].toLocaleString()}`
+                        + `<br><b>Recoveries:</b> ${datum['recoveries'][index].toLocaleString()}`;
                 });
             $(`[title="${d.properties.name}"]`).popover('show');
-            let data = d3.select('#popover').datum();
-            let y = d3.scaleLinear().domain([0, d3.max(data['cases'])]).range([0,50])
-            d3.select('.popover-body').append('svg').append('g')
-                .attr('fill', 'red')
-                .selectAll('rect').data(data['cases']).join('rect')
-                    .attr("x", (d, i) => i)
-                    .attr("width", 100/range)
-                    .attr('y', d => 50-y(d))
-                    .attr('height', d => y(d));
+            let draw_graph = (dataset, fill_color, adjustment = 0) => {
+                if (d3.max(datum[dataset]) != 0) {
+                    let y = d3.scaleLinear().domain([0, d3.max(datum[dataset])]).range([0, 50]);
+                    graphs.append('g')
+                        .attr('fill', fill_color)
+                        .selectAll('rect').data(datum[dataset]).join('rect')
+                        .attr("x", (d, i) => i)
+                        .attr("width", 80 / range)
+                        .attr('y', d => 50 - y(d))
+                        .attr('height', d => y(d))
+                        .attr('transform', `translate(${adjustment - 40},0)`);
+                }
+            };
+            let graphs = d3.select('.popover-body').append('svg')
+                .attr('width', 250)
+                .attr('height', 75)
+                .style('margin', '1vh');
+            draw_graph('cases', 'red');
+            draw_graph('deaths', 'purple', 80);
+            draw_graph('recoveries', 'blue', 160);
         });
     } else {
         d3.select('#popover').attr('data-toggle', 'popover')
