@@ -47,13 +47,9 @@ let get_cases = (d) => {
 };
 
 let color = d3.scaleSequential()
-    .domain([0, 0.002])
+    .domain([0, 0.005])
     .interpolator(d3.interpolateRgbBasis(['#cccccd', 'red', 'firebrick']))
     .unknown('#ccc');
-
-let format_tooltip = (d) => {
-    return `<b>${d.properties.name}</b><br>${mode}: ${get_cases(d)}`
-};
 
 let highlight =  function() {
     let element = d3.select(this);
@@ -62,6 +58,10 @@ let highlight =  function() {
         .attr('stroke', 'black')
         .attr('vector-effect', 'non-scaling-stroke');
     }
+};
+
+let format_tooltip = (d) => {
+    return `<b>${d.properties.name}</b><br>${mode}: ${get_cases(d)}`
 };
 
 let display_tooltip = (d) => {
@@ -230,6 +230,17 @@ let popover = (country, d) => {
     }
 };
 
+let update_popover = () => {
+    let index = Math.floor((date - new Date('2020-01-22'))/(1000*60*60*24));
+    let focus = d3.select('.has_data[stroke="#000001"]');
+    if (focus.node() != null) {
+        let data = d3.select('#popover').data()[0];
+        d3.select('#pop-c').text(data['cases'][index]);
+        d3.select('#pop-d').text(data['deaths'][index]);
+        d3.select('#pop-r').text(data['recoveries'][index]);
+    };
+};
+
 let zoom = function(d) {
     $('[data-toggle="popover"]').popover('dispose');
     let bbox = d3.select('#main').node().getBoundingClientRect();
@@ -282,7 +293,7 @@ let render = () => {
                 .join('path')
                 .attr('d', path)
                 .attr('fill', d => color(get_percent(d)))
-                .classed('has_data', d => color(get_percent(d)) == 'rgb(204, 204, 205)')
+                .classed('has_data', d => color(get_percent(d)) != 'rgb(204, 204, 204)')
                 .on('mouseover', highlight)
                 .on('mousemove', display_tooltip)
                 .on('mouseleave', hide_tooltip)
@@ -296,11 +307,9 @@ let render = () => {
             .attr('preserveAspectRatio', 'none')
             .attr('xlink:href', ramp_vertical(color.interpolator()).toDataURL());
 
-        let scale = Object.assign(color.copy().domain([0, 0.2]).interpolator(
-            d3.interpolateRound(0, 320)), {
-            range() {
-                return [0, 320];
-            }
+        let scale = color.copy();
+        scale = Object.assign(scale.domain(scale.domain().map(v => 100 * v))
+            .interpolator(d3.interpolateRound(0, 320)), {range() {return [0, 320];}
         });
         let tickAdjust = g => {
             g.selectAll('.tick line').attr('x2', 20).attr('x1', 0);
@@ -313,7 +322,7 @@ let render = () => {
             .call(tickAdjust)
             .call(g => g.select('.domain').remove())
             .call(g => g.append('text')
-                .text('% of Population')
+                .text(mode=='Cases'? '% of Population':'% of Cases')
                 .attr('x', 0)
                 .attr('y', 340)
                 .attr('fill', 'black')
@@ -341,17 +350,6 @@ let pause = () => {
     resume_btn.style.pointerEvents = null;
     pause_btn.setAttribute('disabled', '');
     pause_btn.style.pointerEvents = 'none';
-};
-
-let update_popover = () => {
-    let index = Math.floor((date - new Date('2020-01-22'))/(1000*60*60*24));
-    let focus = d3.select('.has_data[stroke="#000001"]');
-    if (focus.node() != null) {
-        let data = d3.select('#popover').data()[0];
-        d3.select('#pop-c').text(data['cases'][index]);
-        d3.select('#pop-d').text(data['deaths'][index]);
-        d3.select('#pop-r').text(data['recoveries'][index]);
-    };
 };
 
 let advance = () => {
@@ -418,11 +416,14 @@ let change_data = () => {
     data_full = d3.json(`/data/${mode.toLowerCase()}`).then(d => {
         data_full = d;
         if (mode == 'Cases') {
-            color.interpolator(d3.interpolateRgbBasis(['#cccccd', 'red', 'firebrick']));
+            color.domain([0,0.005])
+                .interpolator(d3.interpolateRgbBasis(['#cccccd', 'red', 'firebrick']));
         } else if (mode == 'Deaths') {
-            color.interpolator(d3.interpolateRgbBasis(['#cccccd', 'purple', 'indigo']));
+            color.domain([0,0.2])
+                .interpolator(d3.interpolateRgbBasis(['#cccccd', 'purple', 'indigo']));
         } else {
-            color.interpolator(d3.interpolateRgbBasis(['#cccccd', 'lightblue', 'darkblue']));
+            color.domain([0,0.5])
+                .interpolator(d3.interpolateRgbBasis(['#cccccd', 'lightblue', 'darkblue']));
         }
         render();
     });

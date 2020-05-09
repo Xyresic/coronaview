@@ -12,12 +12,21 @@ db.init_app(app)
 
 def get_data(table):
     data = {}
-    for entry in table.query.all():
-        date = entry.date
-        country = entry.country
-        if date not in data:
-            data[date] = {}
-        data[date][country.name] = [entry.amount / country.population, entry.amount]
+    if table == Cases:
+        for entry in table.query.all():
+            date = entry.date
+            country = entry.country
+            if date not in data:
+                data[date] = {}
+            data[date][country.name] = [entry.amount / country.population, entry.amount]
+    else:
+        for entry in table.query.all():
+            date = entry.date
+            country = entry.country
+            if date not in data:
+                data[date] = {}
+            cases = entry.cases.amount
+            data[date][country.name] = [0 if cases == 0 else entry.amount / cases, entry.amount]
     return data
 
 
@@ -50,10 +59,11 @@ def deaths():
 def recoveries():
     return jsonify(get_data(Recovered))
 
+
 @app.route('/data/economy')
 def economy():
     return "insert economy data here"
-    # return jsonify(get_data(Economy))
+
 
 if __name__ == '__main__':
     app.debug = True
