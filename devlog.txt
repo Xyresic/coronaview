@@ -79,6 +79,10 @@ JosephL -- 2020-05-6 18:19
     - Searched for more economic apis/databases related to COVID-19
     - Implemented pause button
 
+MichaelZ -- 2020-05-07 04:00
+    - Add flask route to display COVID-19 Economic Impact information
+    - Create table for economic data (to be compiled later)
+
 EricL -- 2020-05-07 11:01
     - Fixed popover positioning
     - Fixed popovers on countries w/o data
