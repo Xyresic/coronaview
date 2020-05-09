@@ -36,20 +36,6 @@ def data(country):
     return jsonify(json)
 
 
-@app.route('/data/<country>/<date>')
-def dated(country, date):
-    entry = Countries.query.filter_by(name=country).first()
-
-    def find(query):
-        return query.filter_by(date=date).first().amount
-
-    json = {'population': entry.population,
-            'cases': find(entry.cases),
-            'deaths': find(entry.deaths),
-            'recoveries': find(entry.recovered)}
-    return jsonify(json)
-
-
 @app.route('/data/cases')
 def cases():
     return jsonify(get_data(Cases))

@@ -77,7 +77,7 @@ let hide_tooltip = function(d) {
     }
 };
 
-let ramp = (color, n = 256) => {
+let ramp_vertical = (color, n = 256) => {
     let canvas = document.createElement('canvas');
     canvas.width = 1;
     canvas.height = n;
@@ -85,6 +85,18 @@ let ramp = (color, n = 256) => {
     for (let i = 0; i < n; ++i) {
         context.fillStyle = color(i / (n - 1));
         context.fillRect(0, i, 1, 1);
+    }
+    return canvas;
+};
+
+let ramp_horizontal = (color, n = 256) => {
+    let canvas = document.createElement('canvas');
+    canvas.width = n;
+    canvas.height = 1;
+    const context = canvas.getContext("2d");
+    for (let i = 0; i < n; ++i) {
+        context.fillStyle = color(i / (n - 1));
+        context.fillRect(i, 0, 1, 1);
     }
     return canvas;
 };
@@ -108,17 +120,29 @@ let popover = (country, d) => {
             $(`[title="${d.properties.name}"]`).popover('show');
 
             let body = d3.select('.popover-body');
+            body.append('div')
+                .style('text-align', 'center')
+                .style('margin-bottom', '2vh')
+                .append('b').text('Total');
             let total_graphs = body.append('svg')
                 .attr('width', 250)
-                .attr('height', 50);
+                .attr('height', 60);
             body.append('hr');
+            body.append('div')
+                .style('text-align', 'center')
+                .style('margin-bottom', '2vh')
+                .append('b').text('New');
             let new_graphs = body.append('svg')
                 .attr('width', 250)
-                .attr('height', 50);
+                .attr('height', 60);
             body.append('hr');
+            body.append('div')
+                .style('text-align', 'center')
+                .style('margin-bottom', '1vh')
+                .append('b').text('Doubling Rate');
             let growth = body.append('svg')
                 .attr('width', 250)
-                .attr('height', 50);
+                .attr('height', 60);
 
             let pairwise_diff = (prev => val => {
                 let diff = Math.abs(val-prev);
@@ -129,7 +153,6 @@ let popover = (country, d) => {
                 let y = d3.scaleLinear().domain([0, d3.max(data)]).range([0, 50]);
                 svg.append('g')
                     .attr('fill', fill_color)
-                    .style('width', 80)
                     .selectAll('rect').data(data).join('rect')
                     .attr("x", (d, i) => i * 80 / range)
                     .attr("width", 80 / range)
@@ -148,6 +171,41 @@ let popover = (country, d) => {
             check('cases', 'red');
             check('deaths', 'purple', 80);
             check('recoveries', 'blue', 160);
+
+            let scale = d3.scaleSequential()
+                .domain([3, 30])
+                .interpolator(d3.interpolateRgbBasis(['#f60', '#f4e5d2']))
+                .unknown('#ccc');
+
+            let new_cases = datum['cases'].map(pairwise_diff(0));
+            let growth_rates =  datum['cases'].map((v,i) => v / new_cases[i]);
+            growth.append('g').selectAll('rect').data(growth_rates).join('rect')
+                .attr("x", (d, i) => i * 250 / range)
+                .attr("width", 250 / range)
+                .attr('y', 0)
+                .attr('height', 30)
+                .attr('fill', d => scale(d));
+            growth.append('image')
+                .attr('y', 35)
+                .attr('width', 250)
+                .attr('height', 5)
+                .attr('preserveAspectRatio', 'none')
+                .attr('transform', 'rotate(180,125,40)')
+                .attr('xlink:href', ramp_horizontal(scale.interpolator()).toDataURL());
+            growth.append('text')
+                .text('>30 Days')
+                .attr('x', 0)
+                .attr('y', 55)
+                .attr('fill', 'black')
+                .attr('text-anchor', 'start')
+                .style('font', '10px bold');
+            growth.append('text')
+                .text('<3 Days')
+                .attr('x', 250)
+                .attr('y', 55)
+                .attr('fill', 'black')
+                .attr('text-anchor', 'end')
+                .style('font', '10px bold');
         });
     } else {
         d3.select('#popover').attr('data-toggle', 'popover')
@@ -222,7 +280,7 @@ let render = () => {
             .attr('width', 10)
             .attr('height', 320)
             .attr('preserveAspectRatio', 'none')
-            .attr('xlink:href', ramp(color.interpolator()).toDataURL());
+            .attr('xlink:href', ramp_vertical(color.interpolator()).toDataURL());
 
         let scale = Object.assign(color.copy().domain([0, 0.2]).interpolator(
             d3.interpolateRound(0, 320)), {
