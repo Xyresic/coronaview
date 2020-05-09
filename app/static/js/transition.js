@@ -113,9 +113,12 @@ let popover = (country, d) => {
                 .attr('data-content', () => {
                     let index = Math.floor((date - new Date('2020-01-22'))/(1000*60*60*24));
                     return `<b>Population (2018)</b>: ${datum['population'].toLocaleString()}`
-                        + `<br><b>Cases:</b> ${datum['cases'][index].toLocaleString()}`
-                        + `<br><b>Deaths:</b> ${datum['deaths'][index].toLocaleString()}`
-                        + `<br><b>Recoveries:</b> ${datum['recoveries'][index].toLocaleString()}` + '<hr>';
+                        + '<br><b>Cases:</b> '
+                        + `<span id="pop-c">${datum['cases'][index].toLocaleString()}</span>`
+                        + '<br><b id>Deaths:</b> '
+                        + `<span id="pop-d">${datum['deaths'][index].toLocaleString()}</span>`
+                        + '<br><b>Recoveries:</b> '
+                        + `<span id="pop-r">${datum['recoveries'][index].toLocaleString()}</span>` + '<hr>';
                 });
             $(`[title="${d.properties.name}"]`).popover('show');
 
@@ -390,8 +393,14 @@ let update = () => {
         resume_btn.style.pointerEvents = 'none';
     }
 
+    let index = Math.floor((date - new Date('2020-01-22'))/(1000*60*60*24));
     let focus = d3.select('.has_data[stroke="black"]');
-    if (focus.node() != null) popover(focus, focus.data()[0]);
+    if (focus.node() != null) {
+        let data = d3.select('#popover').data()[0];
+        d3.select('#pop-c').text(data['cases'][index]);
+        d3.select('#pop-d').text(data['deaths'][index]);
+        d3.select('#pop-r').text(data['recoveries'][index]);
+    };
 
     d3.selectAll('.has_data').transition()
             .duration(100)

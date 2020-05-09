@@ -84,3 +84,18 @@ EricL -- 2020-05-07 11:01
     - Fixed popovers on countries w/o data
     - Improved play/pause button behavior
     - Automatically detect date range
+
+EricL -- 2020-05-08 11:36
+    - Slider and playing updates popover
+
+EricL -- 2020-05-08 15:10
+    - Changed data transferral
+    - Bound data to popover
+    - Added cumulative graphs
+
+EricL -- 2020-05-08 17:34
+    - Added new graphs
+
+EricL -- 2020-05-08 20:17
+    - Added doubling rate visualization
+    - Added max to graphs
