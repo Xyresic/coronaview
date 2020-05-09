@@ -113,3 +113,6 @@ EricL -- 2020-05-09 15:41
     - Made data loading asynchronous; performance improvements
     - Re-fixed popovers on countries w/o data
     - Ported CSS to external stylesheet
+
+EricL -- 2020-05-09 17:14
+    - Fixed playing not updating map on deaths/recoveries

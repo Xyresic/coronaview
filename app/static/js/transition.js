@@ -354,17 +354,19 @@ let update_map = () => {
         d3.select('#pop-r').text(data['recoveries'][index]);
     };
 
-    let has_data = d3.selectAll('.has_data').transition()
-        .duration(100);
+    let has_data = d3.selectAll('.has_data');
     switch (mode) {
         case 'Cases':
-            has_data.attr('fill', d => color(get_percent(d, data_full)));
+            has_data.transition()
+                .duration(100).attr('fill', d => color(get_percent(d, data_full)));
             break;
         case 'Deaths':
-            data_deaths.then(D => has_data.attr('fill', d => color(get_percent(d, D))));
+            data_deaths.then(D => has_data.transition()
+                .duration(100).attr('fill', d => color(get_percent(d, D))));
             break;
         default:
-            data_recovered.then(D => has_data.attr('fill', d => color(get_percent(d, D))));
+            data_recovered.then(D => has_data.transition()
+                .duration(100).attr('fill', d => color(get_percent(d, D))));
     }
 };
 
