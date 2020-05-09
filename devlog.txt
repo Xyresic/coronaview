@@ -96,6 +96,7 @@ EricL -- 2020-05-08 15:10
 EricL -- 2020-05-08 17:34
     - Added new graphs
 
-EricL -- 2020-05-08 20:17
+EricL -- 2020-05-08 20:37
     - Added doubling rate visualization
     - Added max to graphs
+    - Made popover updating fast
