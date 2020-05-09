@@ -26,7 +26,7 @@ def get_data(table):
             if date not in data:
                 data[date] = {}
             cases = entry.cases.amount
-            data[date][country.name] = [0 if cases == 0 else entry.amount / cases, entry.amount]
+            data[date][country.name] = [0 if cases == 0 else (entry.amount / cases), entry.amount]
     return data
 
 

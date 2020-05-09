@@ -285,7 +285,7 @@ let render = (data) => {
                 .join('path')
                 .attr('d', path)
                 .attr('fill', d => color(get_percent(d, data)))
-                .classed('has_data', d => color(get_percent(d, data)) != 'rgb(204, 204, 204)')
+                .classed('has_data', d => color(get_percent(d, data)) != '#ccc')
                 .on('mouseover', highlight)
                 .on('mousemove', display_tooltip)
                 .on('mouseleave', hide_tooltip)
@@ -361,10 +361,10 @@ let update_map = () => {
             has_data.attr('fill', d => color(get_percent(d, data_full)));
             break;
         case 'Deaths':
-            data_deaths.then(D => has_data.attr('fill', d => get_percent(d, D)));
+            data_deaths.then(D => has_data.attr('fill', d => color(get_percent(d, D))));
             break;
         default:
-            data_recovered.then(D => has_data.attr('fill', d => get_percent(d, D)));
+            data_recovered.then(D => has_data.attr('fill', d => color(get_percent(d, D))));
     }
 };
 
@@ -392,6 +392,12 @@ let advance = () => {
         slider.value = parseInt(slider.value) + 1;
 
         update_map();
+
+        if (elapsed > 150 * (range - slider_pos)) {
+            timer.stop();
+            pause_btn.setAttribute('disabled', '');
+            pause_btn.style.pointerEvents = 'none';
+        }
     }, 150);
 };
 
@@ -457,3 +463,13 @@ resume_btn.addEventListener('click', advance);
 pause_btn.addEventListener('click', pause)
 slider.addEventListener('input', update);
 selector.addEventListener('change', change_data);
+
+data_deaths.then(() => {
+    $('#deaths-option').prop('disabled', false);
+    $('#selector').selectpicker('refresh');
+});
+data_recovered.then(() => {
+    $('#recovered-option').prop('disabled', false);
+    $('#selector').selectpicker('refresh');
+});
+
