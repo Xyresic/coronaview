@@ -29,12 +29,15 @@ let data_full = d3.json('/data/cases').then(d => {
     range = Object.keys(data_full).length;
     slider.setAttribute('max', range);
     slider.removeAttribute('disabled');
-    render();
+    mode = 'Cases';
+    render(data_full);
 });
+let data_deaths = d3.json('/data/deaths');
+let data_recovered = d3.json('/data/recoveries');
 
 let map_data = d3.json(map_url)
-let get_percent = (d) => {
-    let data_dated = data_full[get_date()];
+let get_percent = (d, data) => {
+    let data_dated = data[get_date()];
     if (data_dated.hasOwnProperty(d.properties.name)) {
         return data_dated[d.properties.name][0];
     } else return undefined;
@@ -230,17 +233,6 @@ let popover = (country, d) => {
     }
 };
 
-let update_popover = () => {
-    let index = Math.floor((date - new Date('2020-01-22'))/(1000*60*60*24));
-    let focus = d3.select('.has_data[stroke="#000001"]');
-    if (focus.node() != null) {
-        let data = d3.select('#popover').data()[0];
-        d3.select('#pop-c').text(data['cases'][index]);
-        d3.select('#pop-d').text(data['deaths'][index]);
-        d3.select('#pop-r').text(data['recoveries'][index]);
-    };
-};
-
 let zoom = function(d) {
     $('[data-toggle="popover"]').popover('dispose');
     let bbox = d3.select('#main').node().getBoundingClientRect();
@@ -276,7 +268,7 @@ let zoom = function(d) {
         .attr('transform', `translate(${width * c_factor},${height / 2})scale(${k})translate(${-x},${-y})`);
 };
 
-let render = () => {
+let render = (data) => {
     if (timer != null) timer.stop();
     date = new Date('2020-01-22');
     d3.selectAll('svg *').remove();
@@ -292,8 +284,8 @@ let render = () => {
                 .data(countries.features)
                 .join('path')
                 .attr('d', path)
-                .attr('fill', d => color(get_percent(d)))
-                .classed('has_data', d => color(get_percent(d)) != 'rgb(204, 204, 204)')
+                .attr('fill', d => color(get_percent(d, data)))
+                .classed('has_data', d => color(get_percent(d, data)) != 'rgb(204, 204, 204)')
                 .on('mouseover', highlight)
                 .on('mousemove', display_tooltip)
                 .on('mouseleave', hide_tooltip)
@@ -352,6 +344,30 @@ let pause = () => {
     pause_btn.style.pointerEvents = 'none';
 };
 
+let update_map = () => {
+    let index = Math.floor((date - new Date('2020-01-22'))/(1000*60*60*24));
+    let focus = d3.select('.has_data[stroke="#000001"]');
+    if (focus.node() != null) {
+        let data = d3.select('#popover').data()[0];
+        d3.select('#pop-c').text(data['cases'][index]);
+        d3.select('#pop-d').text(data['deaths'][index]);
+        d3.select('#pop-r').text(data['recoveries'][index]);
+    };
+
+    let has_data = d3.selectAll('.has_data').transition()
+        .duration(100);
+    switch (mode) {
+        case 'Cases':
+            has_data.attr('fill', d => color(get_percent(d, data_full)));
+            break;
+        case 'Deaths':
+            data_deaths.then(D => has_data.attr('fill', d => get_percent(d, D)));
+            break;
+        default:
+            data_recovered.then(D => has_data.attr('fill', d => get_percent(d, D)));
+    }
+};
+
 let advance = () => {
     resume_btn.setAttribute('disabled', '');
     resume_btn.style.pointerEvents = 'none';
@@ -375,17 +391,7 @@ let advance = () => {
 
         slider.value = parseInt(slider.value) + 1;
 
-        update_popover();
-
-        d3.selectAll('.has_data').transition()
-            .duration(100)
-            .attr('fill', d => color(get_percent(d)));
-
-        if (elapsed > 150 * (range - slider_pos)) {
-            timer.stop();
-            pause_btn.setAttribute('disabled', '');
-            pause_btn.style.pointerEvents = 'none';
-        }
+        update_map();
     }, 150);
 };
 
@@ -404,29 +410,31 @@ let update = () => {
         resume_btn.style.pointerEvents = 'none';
     }
 
-    update_popover();
-
-    d3.selectAll('.has_data').transition()
-            .duration(100)
-            .attr('fill', d => color(get_percent(d)));
+    update_map();
 };
 
 let change_data = () => {
     mode = selector.value;
-    data_full = d3.json(`/data/${mode.toLowerCase()}`).then(d => {
-        data_full = d;
-        if (mode == 'Cases') {
+    switch (mode) {
+        case 'Cases':
             color.domain([0,0.005])
                 .interpolator(d3.interpolateRgbBasis(['#cccccd', 'red', 'firebrick']));
-        } else if (mode == 'Deaths') {
-            color.domain([0,0.2])
-                .interpolator(d3.interpolateRgbBasis(['#cccccd', 'purple', 'indigo']));
-        } else {
-            color.domain([0,0.5])
-                .interpolator(d3.interpolateRgbBasis(['#cccccd', 'lightblue', 'darkblue']));
-        }
-        render();
-    });
+            render(data_full);
+            break;
+        case 'Deaths':
+            data_deaths.then(d => {
+                color.domain([0,0.2])
+                    .interpolator(d3.interpolateRgbBasis(['#cccccd', 'purple', 'indigo']));
+                render(d);
+            });
+            break;
+        default:
+            data_recovered.then(d => {
+                color.domain([0,0.5])
+                    .interpolator(d3.interpolateRgbBasis(['#cccccd', 'lightblue', 'darkblue']));
+                render(d);
+            });
+    }
 };
 
 resume_btn.style.pointerEvents = 'none';
