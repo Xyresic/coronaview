@@ -107,3 +107,9 @@ EricL -- 2020-05-08 20:37
 
 EricL -- 2020-05-08 21:18
     - Fixed popover updating when hovering over another country
+
+EricL -- 2020-05-09 15:41
+    - Deaths and recoveries are now percentages of cases
+    - Made data loading asynchronous; performance improvements
+    - Re-fixed popovers on countries w/o data
+    - Ported CSS to external stylesheet
