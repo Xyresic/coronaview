@@ -77,7 +77,7 @@ let hide_tooltip = function(d) {
     }
 };
 
-let ramp = (color, n = 256) => {
+let ramp_vertical = (color, n = 256) => {
     let canvas = document.createElement('canvas');
     canvas.width = 1;
     canvas.height = n;
@@ -89,21 +89,134 @@ let ramp = (color, n = 256) => {
     return canvas;
 };
 
+let ramp_horizontal = (color, n = 256) => {
+    let canvas = document.createElement('canvas');
+    canvas.width = n;
+    canvas.height = 1;
+    const context = canvas.getContext("2d");
+    for (let i = 0; i < n; ++i) {
+        context.fillStyle = color(i / (n - 1));
+        context.fillRect(i, 0, 1, 1);
+    }
+    return canvas;
+};
+
 let popover = (country, d) => {
     $('[data-toggle="tooltip"]').tooltip('hide');
 
     if (country.attr('class') != null) {
-        d3.json(`/data/${d.properties.name}/${get_date()}`).then(datum => {
-            d3.select('#popover').attr('data-toggle', 'popover')
+        d3.json(`/data/${d.properties.name}`).then(datum => {
+            d3.select('#popover').datum(datum)
+                .attr('data-toggle', 'popover')
                 .attr('data-placement', 'right')
                 .attr('title', d.properties.name)
                 .attr('data-content', () => {
+                    let index = Math.floor((date - new Date('2020-01-22'))/(1000*60*60*24));
                     return `<b>Population (2018)</b>: ${datum['population'].toLocaleString()}`
-                        + `<br><b>Cases:</b> ${datum['cases'].toLocaleString()}`
-                        + `<br><b>Deaths:</b> ${datum['deaths'].toLocaleString()}`
-                        + `<br><b>Recoveries:</b> ${datum['recoveries'].toLocaleString()}`
+                        + '<br><b>Cases:</b> '
+                        + `<span id="pop-c">${datum['cases'][index].toLocaleString()}</span>`
+                        + '<br><b id>Deaths:</b> '
+                        + `<span id="pop-d">${datum['deaths'][index].toLocaleString()}</span>`
+                        + '<br><b>Recoveries:</b> '
+                        + `<span id="pop-r">${datum['recoveries'][index].toLocaleString()}</span>` + '<hr>';
                 });
             $(`[title="${d.properties.name}"]`).popover('show');
+
+            let body = d3.select('.popover-body');
+            body.append('div')
+                .style('text-align', 'center')
+                .style('margin-bottom', '2vh')
+                .append('b').text('Total');
+            let total_graphs = body.append('svg')
+                .attr('width', 250)
+                .attr('height', 60);
+            body.append('hr');
+            body.append('div')
+                .style('text-align', 'center')
+                .style('margin-bottom', '2vh')
+                .append('b').text('New');
+            let new_graphs = body.append('svg')
+                .attr('width', 250)
+                .attr('height', 60);
+            body.append('hr');
+            body.append('div')
+                .style('text-align', 'center')
+                .style('margin-bottom', '1vh')
+                .append('b').text('Doubling Rate');
+            let growth = body.append('svg')
+                .attr('width', 250)
+                .attr('height', 60);
+
+            let pairwise_diff = (prev => val => {
+                let diff = Math.abs(val-prev);
+                prev = val;
+                return diff;
+            });
+            let draw_graph = (svg, data, fill_color, adjustment) => {
+                let y = d3.scaleLinear().domain([0, d3.max(data)]).range([0, 50]);
+                let graph = svg.append('g');
+                graph.attr('fill', fill_color)
+                    .selectAll('rect').data(data).join('rect')
+                    .attr("x", (d, i) => i * 80 / range)
+                    .attr("width", 80 / range)
+                    .attr('y', d => 50 - y(d))
+                    .attr('height', d => y(d))
+                    .attr('transform', `translate(${adjustment},5)`);
+                graph.append('text')
+                    .text(d3.max(data))
+                    .attr('x', 0)
+                    .attr('y', 0)
+                    .attr('fill', 'black')
+                    .attr('text-anchor', 'start')
+                    .attr('transform', `translate(${adjustment+5},10)`)
+                    .style('font', '10px bold');
+            };
+            let check = (dataset, fill_color, adjustment = 0) => {
+                let data = datum[dataset]
+                if(d3.max(data) != 0) {
+                    draw_graph(total_graphs, data, fill_color, adjustment);
+                    draw_graph(new_graphs, data.map(pairwise_diff(0)), fill_color, adjustment);
+                }
+            }
+
+            check('cases', 'red');
+            check('deaths', 'purple', 80);
+            check('recoveries', 'blue', 160);
+
+            let scale = d3.scaleSequential()
+                .domain([3, 30])
+                .interpolator(d3.interpolateRgbBasis(['#f60', '#f4e5d2']))
+                .unknown('#ccc');
+
+            let new_cases = datum['cases'].map(pairwise_diff(0));
+            let growth_rates =  datum['cases'].map((v,i) => v / new_cases[i]);
+            growth.append('g').selectAll('rect').data(growth_rates).join('rect')
+                .attr("x", (d, i) => i * 250 / range)
+                .attr("width", 250 / range)
+                .attr('y', 0)
+                .attr('height', 30)
+                .attr('fill', d => scale(d));
+            growth.append('image')
+                .attr('y', 35)
+                .attr('width', 250)
+                .attr('height', 5)
+                .attr('preserveAspectRatio', 'none')
+                .attr('transform', 'rotate(180,125,40)')
+                .attr('xlink:href', ramp_horizontal(scale.interpolator()).toDataURL());
+            growth.append('text')
+                .text('>30 Days')
+                .attr('x', 0)
+                .attr('y', 55)
+                .attr('fill', 'black')
+                .attr('text-anchor', 'start')
+                .style('font', '10px bold');
+            growth.append('text')
+                .text('<3 Days')
+                .attr('x', 250)
+                .attr('y', 55)
+                .attr('fill', 'black')
+                .attr('text-anchor', 'end')
+                .style('font', '10px bold');
         });
     } else {
         d3.select('#popover').attr('data-toggle', 'popover')
@@ -178,7 +291,7 @@ let render = () => {
             .attr('width', 10)
             .attr('height', 320)
             .attr('preserveAspectRatio', 'none')
-            .attr('xlink:href', ramp(color.interpolator()).toDataURL());
+            .attr('xlink:href', ramp_vertical(color.interpolator()).toDataURL());
 
         let scale = Object.assign(color.copy().domain([0, 0.2]).interpolator(
             d3.interpolateRound(0, 320)), {
@@ -250,6 +363,9 @@ let advance = () => {
 
         slider.value = parseInt(slider.value) + 1;
 
+        let focus = d3.select('.has_data[stroke="black"]');
+        if (focus.node() != null) popover(focus, focus.data()[0]);
+
         d3.selectAll('.has_data').transition()
             .duration(100)
             .attr('fill', d => color(get_percent(d)));
@@ -276,6 +392,15 @@ let update = () => {
         resume_btn.setAttribute('disabled', '');
         resume_btn.style.pointerEvents = 'none';
     }
+
+    let index = Math.floor((date - new Date('2020-01-22'))/(1000*60*60*24));
+    let focus = d3.select('.has_data[stroke="black"]');
+    if (focus.node() != null) {
+        let data = d3.select('#popover').data()[0];
+        d3.select('#pop-c').text(data['cases'][index]);
+        d3.select('#pop-d').text(data['deaths'][index]);
+        d3.select('#pop-r').text(data['recoveries'][index]);
+    };
 
     d3.selectAll('.has_data').transition()
             .duration(100)

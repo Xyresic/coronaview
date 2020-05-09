@@ -26,17 +26,13 @@ def root():
     return render_template('index.html')
 
 
-@app.route('/data/<country>/<date>')
-def data(country, date):
+@app.route('/data/<country>')
+def data(country):
     entry = Countries.query.filter_by(name=country).first()
-
-    def find(query):
-        return query.filter_by(date=date).first().amount
-
     json = {'population': entry.population,
-            'cases': find(entry.cases),
-            'deaths': find(entry.deaths),
-            'recoveries': find(entry.recovered)}
+            'cases': [case.amount for case in entry.cases.all()][::-1],
+            'deaths': [case.amount for case in entry.deaths.all()][::-1],
+            'recoveries': [case.amount for case in entry.recovered.all()][::-1]}
     return jsonify(json)
 
 
