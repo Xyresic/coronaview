@@ -151,14 +151,22 @@ let popover = (country, d) => {
             });
             let draw_graph = (svg, data, fill_color, adjustment) => {
                 let y = d3.scaleLinear().domain([0, d3.max(data)]).range([0, 50]);
-                svg.append('g')
-                    .attr('fill', fill_color)
+                let graph = svg.append('g');
+                graph.attr('fill', fill_color)
                     .selectAll('rect').data(data).join('rect')
                     .attr("x", (d, i) => i * 80 / range)
                     .attr("width", 80 / range)
                     .attr('y', d => 50 - y(d))
                     .attr('height', d => y(d))
-                    .attr('transform', `translate(${adjustment},0)`);
+                    .attr('transform', `translate(${adjustment},5)`);
+                graph.append('text')
+                    .text(d3.max(data))
+                    .attr('x', 0)
+                    .attr('y', 0)
+                    .attr('fill', 'black')
+                    .attr('text-anchor', 'start')
+                    .attr('transform', `translate(${adjustment+5},10)`)
+                    .style('font', '10px bold');
             };
             let check = (dataset, fill_color, adjustment = 0) => {
                 let data = datum[dataset]
