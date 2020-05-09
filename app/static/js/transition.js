@@ -56,9 +56,12 @@ let format_tooltip = (d) => {
 };
 
 let highlight =  function() {
-    d3.select(this)
+    let element = d3.select(this);
+    if (element.attr('stroke') != '#000001'){
+        d3.select(this)
         .attr('stroke', 'black')
         .attr('vector-effect', 'non-scaling-stroke');
+    }
 };
 
 let display_tooltip = (d) => {
@@ -254,7 +257,7 @@ let zoom = function(d) {
 
     d3.select('.countries').selectAll('path')
         .attr('stroke', (d) => {
-            return center && center == d.properties.name? 'black':null;
+            return center && center == d.properties.name? '#000001':null;
         });
 
     d3.select('.countries').transition()
@@ -340,6 +343,17 @@ let pause = () => {
     pause_btn.style.pointerEvents = 'none';
 };
 
+let update_popover = () => {
+    let index = Math.floor((date - new Date('2020-01-22'))/(1000*60*60*24));
+    let focus = d3.select('.has_data[stroke="#000001"]');
+    if (focus.node() != null) {
+        let data = d3.select('#popover').data()[0];
+        d3.select('#pop-c').text(data['cases'][index]);
+        d3.select('#pop-d').text(data['deaths'][index]);
+        d3.select('#pop-r').text(data['recoveries'][index]);
+    };
+};
+
 let advance = () => {
     resume_btn.setAttribute('disabled', '');
     resume_btn.style.pointerEvents = 'none';
@@ -363,8 +377,7 @@ let advance = () => {
 
         slider.value = parseInt(slider.value) + 1;
 
-        let focus = d3.select('.has_data[stroke="black"]');
-        if (focus.node() != null) popover(focus, focus.data()[0]);
+        update_popover();
 
         d3.selectAll('.has_data').transition()
             .duration(100)
@@ -393,14 +406,7 @@ let update = () => {
         resume_btn.style.pointerEvents = 'none';
     }
 
-    let index = Math.floor((date - new Date('2020-01-22'))/(1000*60*60*24));
-    let focus = d3.select('.has_data[stroke="black"]');
-    if (focus.node() != null) {
-        let data = d3.select('#popover').data()[0];
-        d3.select('#pop-c').text(data['cases'][index]);
-        d3.select('#pop-d').text(data['deaths'][index]);
-        d3.select('#pop-r').text(data['recoveries'][index]);
-    };
+    update_popover();
 
     d3.selectAll('.has_data').transition()
             .duration(100)

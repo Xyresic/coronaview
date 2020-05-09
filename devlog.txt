@@ -104,3 +104,6 @@ EricL -- 2020-05-08 20:37
     - Added doubling rate visualization
     - Added max to graphs
     - Made popover updating fast
+
+EricL -- 2020-05-08 21:18
+    - Fixed popover updating when hovering over another country
