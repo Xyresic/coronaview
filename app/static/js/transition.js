@@ -422,6 +422,8 @@ let update = () => {
 };
 
 let change_data = () => {
+    $('[data-toggle="popover"]').popover('dispose');
+
     mode = selector.value;
     switch (mode) {
         case 'Cases':
