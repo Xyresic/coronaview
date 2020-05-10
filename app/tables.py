@@ -63,15 +63,25 @@ class Recovered(db.Model):
         self.country_id = country_id
         self.cases_id = cases_id
 
-class Companies(db.Model):
+class Company(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(10), nullable=False)
     sector = db.Column(db.String(10), nullable=False)
     price = db.Column(db.Integer, nullable=False)
+    symbol = db.Column(db.String(10), nullable=False)
     market_cap = db.Column(db.Integer, nullable=False)
+    sector_id = db.Column(db.Integer, db.ForeignKey('sector.id'), nullable=False)
 
-    def __init__(self, sector, name, price, market_cap):
+    def __init__(self, sector, name, price, symbol, market_cap):
         self.sector = sector
         self.name = name
         self.price = price
+        self.symbol = symbol
         self.market_cap = market_cap
+
+class Sector(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(10), nullable=False)
+    companies = db.relationship('Company', backref='sector')
+    def __init__(self,name):
+        self.name = name

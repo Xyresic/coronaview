@@ -29,7 +29,7 @@ with app.app_context():
     end = 500
     S_P = {}
     while (i < end):
-        company = Company(data[i]['Name'],data[i]['Sector'],data[i]['Price'],data[i]['Market Cap'])
+        company = Company(data[i]['Name'],data[i]['Sector'],data[i]['Price'],date[i]['Symbol'],data[i]['Market Cap'])
         db.session.add(company)
         i += 1
     db.session.commit()
