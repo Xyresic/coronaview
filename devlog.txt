@@ -116,3 +116,9 @@ EricL -- 2020-05-09 15:41
 
 EricL -- 2020-05-09 17:14
     - Fixed playing not updating map on deaths/recoveries
+
+EricL -- 2020-05-10 19:20
+    - Hid popover on change of data set
+    - Fixed tooltips on deaths and recoveries due to change in data loading
+    - Fixed tooltip updating when playing
+    - Fixed tooltips displaying on selected country
