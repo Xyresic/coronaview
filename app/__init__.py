@@ -28,8 +28,18 @@ with app.app_context():
     i = 0
     end = 500
     S_P = {}
+    set_of_sectors = set()
     while (i < end):
+        sector = None
         company = Company(data[i]['Name'],data[i]['Sector'],data[i]['Price'],date[i]['Symbol'],data[i]['Market Cap'])
+        if data[i]['Sector'] not in set_of_sectors:
+            set_of_sectors.add(data[i])
+            sector = Sector(data[i]['Sector'])
+            sector.append(company)
+        else:
+            sector = Sector.query.filter_by(name = data[i]['Sector']).first()
+            sector.append(company)
+        db.session.add(sector)
         db.session.add(company)
         i += 1
     db.session.commit()
