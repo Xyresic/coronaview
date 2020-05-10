@@ -40,7 +40,7 @@ EricL -- 2020-04-30 11:20
 JosephL -- 2020-04-30 13:12
     - Discussed what kind of data we wanted with the team
     - Organized Flask App
-    
+
 EricL -- 2020-05-01 15:40
     - Added db building script
     - Ported data to database
@@ -75,9 +75,12 @@ EricL -- 2020-05-06 15:10
     - Changed database relationships to by dynamic
     - Added content to popovers
 
-JosephL -- 2020-05-6 18:19
+JosephL -- 2020-05-06 18:19
     - Searched for more economic apis/databases related to COVID-19
     - Implemented pause button
+
+JosephL -- 2020-05-06 20:41
+    - wrote front end for speedControl bar
 
 MichaelZ -- 2020-05-07 04:00
     - Add flask route to display COVID-19 Economic Impact information
@@ -91,6 +94,13 @@ EricL -- 2020-05-07 11:01
 
 EricL -- 2020-05-08 11:36
     - Slider and playing updates popover
+
+JosephL -- 2020-05-08 13:12
+    - relearned SQLAlchemy
+    - started writing SQLAlchemy tables for the companies
+
+JosephL -- 2020-05-08 14:49
+    - finished writing SQLAlchemy tables for companies and sectors
 
 EricL -- 2020-05-08 15:10
     - Changed data transferral
@@ -108,6 +118,10 @@ EricL -- 2020-05-08 20:37
 EricL -- 2020-05-08 21:18
     - Fixed popover updating when hovering over another country
 
+JosephL -- 2020-05-09 10:37
+    -started writing the data-api pull request for the S&P comapanies
+    -started writing the data request for the historical data of all those companies
+
 EricL -- 2020-05-09 15:41
     - Deaths and recoveries are now percentages of cases
     - Made data loading asynchronous; performance improvements
@@ -117,6 +131,10 @@ EricL -- 2020-05-09 15:41
 EricL -- 2020-05-09 17:14
     - Fixed playing not updating map on deaths/recoveries
 
+JosephL -- 2020-05-09 16:23
+    -finished data request for all stock data
+    -finished backend for the historical data
+    
 EricL -- 2020-05-10 19:20
     - Hid popover on change of data set
     - Fixed tooltips on deaths and recoveries due to change in data loading
