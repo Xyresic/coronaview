@@ -62,3 +62,16 @@ class Recovered(db.Model):
         self.amount = amount
         self.country_id = country_id
         self.cases_id = cases_id
+
+class Companies(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(10), nullable=False)
+    sector = db.Column(db.String(10), nullable=False)
+    price = db.Column(db.Integer, nullable=False)
+    market_cap = db.Column(db.Integer, nullable=False)
+
+    def __init__(self, sector, name, price, market_cap):
+        self.sector = sector
+        self.name = name
+        self.price = price
+        self.market_cap = market_cap
