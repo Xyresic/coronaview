@@ -42,8 +42,8 @@ let get_percent = (d, data) => {
         return data_dated[d.properties.name][0];
     } else return undefined;
 };
-let get_cases = (d) => {
-    let data_dated = data_full[get_date()];
+let get_cases = (d, data) => {
+    let data_dated = data[get_date()];
     if (data_dated !== undefined && data_dated.hasOwnProperty(d.properties.name)) {
         return data_dated[d.properties.name][1].toLocaleString();
     } else return '<i>unknown</i>';
@@ -63,16 +63,31 @@ let highlight =  function() {
     }
 };
 
-let format_tooltip = (d) => {
-    return `<b>${d.properties.name}</b><br>${mode}: ${get_cases(d)}`
+let format_tooltip = (d, data) => {
+    return `<b>${d.properties.name}</b><br>${mode}: ${get_cases(d, data)}`
 };
 
 let display_tooltip = (d) => {
     if (center != d.properties.name) {
         $('#tooltip').css({top: d3.event.pageY, left: d3.event.pageX});
         d3.select('.tooltip').style('pointer-events', 'none');
-        d3.select('#tooltip').attr('data-original-title', format_tooltip(d));
-        $('[data-toggle="tooltip"]').tooltip('show');
+    }
+    switch (mode) {
+        case "Cases":
+            d3.select('#tooltip').attr('data-original-title', format_tooltip(d, data_full));
+            $('[data-toggle="tooltip"]').tooltip('show');
+            break;
+        case 'Deaths':
+            data_deaths.then(D => {
+                d3.select('#tooltip').attr('data-original-title', format_tooltip(d, D));
+                $('[data-toggle="tooltip"]').tooltip('show');
+            });
+            break;
+        default:
+            data_recovered.then(D => {
+                d3.select('#tooltip').attr('data-original-title', format_tooltip(d, D));
+                $('[data-toggle="tooltip"]').tooltip('show');
+            });
     }
 };
 
