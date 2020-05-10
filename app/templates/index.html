@@ -6,28 +6,7 @@
 
 {% block head %}
     <link rel="shortcut icon" href="#">
-    <style>
-        #tooltip {
-            position: absolute;
-        }
-        #controls {
-            width: 60%;
-        }
-        #map {
-            max-width: 100%;
-        }
-        #date-container {
-            max-height: 5vh;
-        }
-        #popover {
-            position: absolute;
-            top: 50%;
-            right: 30%;
-        }
-        .popover .arrow {
-            visibility: hidden;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="../static/css/style.css">
 {% endblock %}
 
 {% block body %}
@@ -38,8 +17,8 @@
         <div class="d-flex justify-content-center align-items-center mx-auto" id="controls">
             <select class="selectpicker mr-3" data-style="btn-outline-primary" id="selector" disabled>
                 <option>Cases</option>
-                <option>Deaths</option>
-                <option>Recoveries</option>
+                <option id="deaths-option" disabled>Deaths</option>
+                <option id="recovered-option" disabled>Recoveries</option>
             </select>
             <input type="range" class="custom-range" value="0" step="1" id="slider" disabled>
             <button type="button" class="btn btn-outline-primary ml-3" id="resume" disabled>Play</button>

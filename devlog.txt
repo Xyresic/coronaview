@@ -57,7 +57,7 @@ EricL -- 2020-05-03 14:22
     - Update play button for slider compatibility
 
 JosephL -- 2020-05-4 13:15
-    - started downloading the databases and researched d3 ways to display the data
+    - Started downloading the databases and researched d3 ways to display the data
 
 EricL -- 2020-05-04 19:25
     - Fixed slider not pausing animation
@@ -76,5 +76,43 @@ EricL -- 2020-05-06 15:10
     - Added content to popovers
 
 JosephL -- 2020-05-6 18:19
-    - searched for more economic apis/databases related to COVID-19
-    - implemented pause button
+    - Searched for more economic apis/databases related to COVID-19
+    - Implemented pause button
+
+MichaelZ -- 2020-05-07 04:00
+    - Add flask route to display COVID-19 Economic Impact information
+    - Create table for economic data (to be compiled later)
+
+EricL -- 2020-05-07 11:01
+    - Fixed popover positioning
+    - Fixed popovers on countries w/o data
+    - Improved play/pause button behavior
+    - Automatically detect date range
+
+EricL -- 2020-05-08 11:36
+    - Slider and playing updates popover
+
+EricL -- 2020-05-08 15:10
+    - Changed data transferral
+    - Bound data to popover
+    - Added cumulative graphs
+
+EricL -- 2020-05-08 17:34
+    - Added new graphs
+
+EricL -- 2020-05-08 20:37
+    - Added doubling rate visualization
+    - Added max to graphs
+    - Made popover updating fast
+
+EricL -- 2020-05-08 21:18
+    - Fixed popover updating when hovering over another country
+
+EricL -- 2020-05-09 15:41
+    - Deaths and recoveries are now percentages of cases
+    - Made data loading asynchronous; performance improvements
+    - Re-fixed popovers on countries w/o data
+    - Ported CSS to external stylesheet
+
+EricL -- 2020-05-09 17:14
+    - Fixed playing not updating map on deaths/recoveries

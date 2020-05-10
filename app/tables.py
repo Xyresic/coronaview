@@ -63,6 +63,7 @@ class Recovered(db.Model):
         self.country_id = country_id
         self.cases_id = cases_id
 
+<<<<<<< HEAD
 class Companies(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(10), nullable=False)
@@ -75,3 +76,8 @@ class Companies(db.Model):
         self.name = name
         self.price = price
         self.market_cap = market_cap
+=======
+
+class Economy(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+>>>>>>> 21200395247edb6d84fabc13b48809fcfcecf71d

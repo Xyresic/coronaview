@@ -1,6 +1,6 @@
 import os, sys, csv
 from flask import Flask, render_template, jsonify
-from tables import db, Countries, Cases, Deaths, Recovered
+from tables import db, Countries, Cases, Deaths, Recovered, Company
 import urllib.request as urllib
 import json
 
@@ -36,12 +36,21 @@ with app.app_context():
 
 def get_data(table):
     data = {}
-    for entry in table.query.all():
-        date = entry.date
-        country = entry.country
-        if date not in data:
-            data[date] = {}
-        data[date][country.name] = [entry.amount / country.population, entry.amount]
+    if table == Cases:
+        for entry in table.query.all():
+            date = entry.date
+            country = entry.country
+            if date not in data:
+                data[date] = {}
+            data[date][country.name] = [entry.amount / country.population, entry.amount]
+    else:
+        for entry in table.query.all():
+            date = entry.date
+            country = entry.country
+            if date not in data:
+                data[date] = {}
+            cases = entry.cases.amount
+            data[date][country.name] = [0 if cases == 0 else (entry.amount / cases), entry.amount]
     return data
 
 
@@ -50,17 +59,13 @@ def root():
     return render_template('index.html')
 
 
-@app.route('/data/<country>/<date>')
-def data(country, date):
+@app.route('/data/<country>')
+def data(country):
     entry = Countries.query.filter_by(name=country).first()
-
-    def find(query):
-        return query.filter_by(date=date).first().amount
-
     json = {'population': entry.population,
-            'cases': find(entry.cases),
-            'deaths': find(entry.deaths),
-            'recoveries': find(entry.recovered)}
+            'cases': [case.amount for case in entry.cases.all()][::-1],
+            'deaths': [case.amount for case in entry.deaths.all()][::-1],
+            'recoveries': [case.amount for case in entry.recovered.all()][::-1]}
     return jsonify(json)
 
 
@@ -77,6 +82,11 @@ def deaths():
 @app.route('/data/recoveries')
 def recoveries():
     return jsonify(get_data(Recovered))
+
+
+@app.route('/data/economy')
+def economy():
+    return "insert economy data here"
 
 
 if __name__ == '__main__':
