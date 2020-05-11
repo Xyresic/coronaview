@@ -128,13 +128,17 @@ EricL -- 2020-05-09 15:41
     - Re-fixed popovers on countries w/o data
     - Ported CSS to external stylesheet
 
+DavidL -- 2020-05-09 16:32
+    - Wrote API cards
+    - Added them to root folder
+
 EricL -- 2020-05-09 17:14
     - Fixed playing not updating map on deaths/recoveries
 
 JosephL -- 2020-05-09 16:23
     -finished data request for all stock data
     -finished backend for the historical data
-    
+
 EricL -- 2020-05-10 19:20
     - Hid popover on change of data set
     - Fixed tooltips on deaths and recoveries due to change in data loading
