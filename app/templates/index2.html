@@ -1,0 +1,45 @@
+{% extends 'template.html' %}
+
+{% block title %}
+    COVID-19 Progression
+{% endblock %}
+
+{% block head %}
+    <link rel="shortcut icon" href="#">
+    <style>
+        #tooltip {
+            position: absolute;
+        }
+        #controls {
+            width: 60%;
+        }
+        #map {
+            max-width: 100%;
+        }
+        #date-container {
+            max-height: 5vh;
+        }
+        #popover {
+            position: absolute;
+        }
+        .popover .arrow {
+            visibility: hidden;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-center">
+        <a class="navbar-brand">COVID-19 Progression</a>
+        <form method="post" action="/">
+            <input type="submit" value="World Cases" name="World Cases" class="btn btn-outline-dark"/>
+            <input type="submit" value="Employment Impact" name="Employment Impact" class="btn btn-outline-dark"/>
+        </form>
+    </nav>
+{% endblock %}
+
+{% block footer %}
+<script src="http://d3js.org/d3.v5.min.js" charset="utf-8"></script>
+<script src="http://d3js.org/topojson.v3.min.js"></script>
+<script src="../static/js/transition.js"></script>
+{% endblock %}

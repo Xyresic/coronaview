@@ -92,6 +92,9 @@ EricL -- 2020-05-07 11:01
     - Improved play/pause button behavior
     - Automatically detect date range
 
+MichaelZ -- 2020-05-07 14:00
+    - Add navbar to switch between different data sets
+
 EricL -- 2020-05-08 11:36
     - Slider and playing updates popover
 
