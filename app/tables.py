@@ -95,7 +95,7 @@ class DailyData(db.Model):
         self.date = date
         self.price = price
 
-<<<<<<< HEAD
+
 class States(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(64), nullable=False)
@@ -116,7 +116,6 @@ class Rates(db.Model):
         self.date = date
         self.rate = rate
         self.state = state_id
-=======
 # class SectorData(db.Model):
 #     id = db.Column(db.Integer, primary_key=True)
 #     date = db.Column(db.String(10), nullable=False)
@@ -125,4 +124,3 @@ class Rates(db.Model):
 #     def __init__(self,date,price):
 #         self.date = date
 #         self.price = price
->>>>>>> aaf67e7bbb3cacacfb798207ec0d8e6f5f3ac53f
