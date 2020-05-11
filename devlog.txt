@@ -142,16 +142,19 @@ JosephL -- 2020-05-09 16:23
     -finished data request for all stock data
     -finished backend for the historical data
     -found economic data on S&P500
-    
+
+JosephL -- 2020-05-09 22:31
+    - fixed bugs related to pulling data
+    - succesfully pulled all the data and built it in to the database
+
 EricL -- 2020-05-10 19:20
     - Hid popover on change of data set
     - Fixed tooltips on deaths and recoveries due to change in data loading
     - Fixed tooltip updating when playing
     - Fixed tooltips displaying on selected country
 
-JosephL -- 2020-05-09 22:31
-    - fixed bugs related to pulling data
-    - succesfully pulled all the data and built it in to the database
+EricL -- 2020-05-10 19:04
+    - Fixed tooltips on deaths and recoveries due to change in data loading
 
 MichaelZ -- 2020-05-11 04:30
     - Update employment impact tab on navbar with appropriate html template

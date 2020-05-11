@@ -71,23 +71,23 @@ let display_tooltip = (d) => {
     if (center != d.properties.name) {
         $('#tooltip').css({top: d3.event.pageY, left: d3.event.pageX});
         d3.select('.tooltip').style('pointer-events', 'none');
-        switch (mode) {
-            case 'Cases':
-                d3.select('#tooltip').attr('data-original-title', format_tooltip(d, data_full));
+    }
+    switch (mode) {
+        case "Cases":
+            d3.select('#tooltip').attr('data-original-title', format_tooltip(d, data_full));
+            $('[data-toggle="tooltip"]').tooltip('show');
+            break;
+        case 'Deaths':
+            data_deaths.then(D => {
+                d3.select('#tooltip').attr('data-original-title', format_tooltip(d, D));
                 $('[data-toggle="tooltip"]').tooltip('show');
-                break;
-            case 'Deaths':
-                data_deaths.then(D => {
-                    d3.select('#tooltip').attr('data-original-title', format_tooltip(d, D));
-                    $('[data-toggle="tooltip"]').tooltip('show');
-                });
-                break;
-            default:
-                data_recovered.then(D => {
-                    d3.select('#tooltip').attr('data-original-title', format_tooltip(d, D));
-                    $('[data-toggle="tooltip"]').tooltip('show');
-                });
-        }
+            });
+            break;
+        default:
+            data_recovered.then(D => {
+                d3.select('#tooltip').attr('data-original-title', format_tooltip(d, D));
+                $('[data-toggle="tooltip"]').tooltip('show');
+            });
     }
 };
 
@@ -400,21 +400,8 @@ let advance = () => {
         let hover = document.querySelectorAll(':hover');
         let country = hover[hover.length - 1];
         if (country !== undefined && country.tagName == 'path') {
-            let t = d3.select('#tooltip');
-            switch (mode) {
-                case 'Cases':
-                    t.attr('data-original-title', format_tooltip(d3.select(country).data()[0], data_full));
-                    break;
-                case 'Deaths':
-                    data_deaths.then(d => {
-                       t.attr('data-original-title', format_tooltip(d3.select(country).data()[0], d));
-                    });
-                    break;
-                default:
-                    data_recovered.then(d => {
-                       t.attr('data-original-title', format_tooltip(d3.select(country).data()[0], d));
-                    });
-            }
+            d3.select('#tooltip')
+                .attr('data-original-title', format_tooltip(d3.select(country).data()[0]));
             $('[data-toggle="tooltip"]').tooltip('hide');
             $('[data-toggle="tooltip"]').tooltip('show');
         }
