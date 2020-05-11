@@ -1,5 +1,5 @@
 from __init__ import app, db
-from tables import Countries, Cases, Deaths, Recovered
+from tables import Countries, Cases, Deaths, Recovered, States, Rates
 from csv import reader
 from urllib.request import urlopen
 from codecs import iterdecode

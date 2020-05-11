@@ -48,7 +48,6 @@ class Deaths(db.Model):
         self.country_id = country_id
         self.cases_id = cases_id
 
-
 class Recovered(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.String(10), nullable=False)
@@ -96,3 +95,24 @@ class DailyData(db.Model):
     def __init__(self,date,price):
         self.date = date
         self.price = price
+
+class States(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(64), nullable=False)
+
+    rates = db.relationship('Rates', backref='state', lazy='dynamic')
+
+    def __init__(self, name):
+        self.name = name
+
+class Rates(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    date = db.Column(db.String(10), nullable=False)
+    rate = db.Column(db.Float(), nullable=False)
+
+    state_id = db.Column(db.ForeignKey('states.id'))
+
+    def __init__(self, date, rate, state_id):
+        self.date = date
+        self.rate = rate
+        self.state = state_id
