@@ -65,17 +65,15 @@ class Recovered(db.Model):
 class Company(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(10), nullable=False)
-    sector = db.Column(db.String(10), nullable=False)
-    price = db.Column(db.Integer, nullable=False)
+    sector_name = db.Column(db.String(10), nullable=False)
     symbol = db.Column(db.String(10), nullable=False)
     market_cap = db.Column(db.Integer, nullable=False)
-    sector_id = db.Column(db.Integer, db.ForeignKey('sector.id'), nullable=False)
+    sector_id = db.Column(db.Integer, db.ForeignKey('sector.id'))
     #relationships
     data_points = db.relationship('DailyData', backref='company')
-    def __init__(self, sector, name, price, symbol, market_cap):
-        self.sector = sector
+    def __init__(self, sector_name, name, symbol, market_cap):
+        self.sector_name = sector_name
         self.name = name
-        self.price = price
         self.symbol = symbol
         self.market_cap = market_cap
 
@@ -84,6 +82,7 @@ class Sector(db.Model):
     name = db.Column(db.String(10), nullable=False)
     #relationships
     companies = db.relationship('Company', backref='sector')
+    # data_points = db.relationship('SectorData', backref='sector')
     def __init__(self,name):
         self.name = name
 
@@ -91,11 +90,12 @@ class DailyData(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.String(10), nullable=False)
     price = db.Column(db.Integer, nullable=False)
-    company_id =  db.Column(db.Integer, db.ForeignKey('company.id'), nullable=False)
+    company_id =  db.Column(db.Integer, db.ForeignKey('company.id'))
     def __init__(self,date,price):
         self.date = date
         self.price = price
 
+<<<<<<< HEAD
 class States(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(64), nullable=False)
@@ -116,3 +116,13 @@ class Rates(db.Model):
         self.date = date
         self.rate = rate
         self.state = state_id
+=======
+# class SectorData(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     date = db.Column(db.String(10), nullable=False)
+#     price = db.Column(db.Integer, nullable=False)
+#     sector_id =  db.Column(db.Integer, db.ForeignKey('sector.id'))
+#     def __init__(self,date,price):
+#         self.date = date
+#         self.price = price
+>>>>>>> aaf67e7bbb3cacacfb798207ec0d8e6f5f3ac53f

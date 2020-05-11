@@ -1,6 +1,6 @@
 import os, sys, csv
 from flask import Flask, render_template, jsonify
-from tables import db, Countries, Cases, Deaths, Recovered, Company
+from tables import db, Countries, Cases, Deaths, Recovered, Company, Sector, DailyData
 import urllib.request as urllib
 import json
 
@@ -14,7 +14,7 @@ db.init_app(app)
 
 # with app.app_context():
 #     db.create_all()
-#     url = "https://pkgstore.datahub.io/core/s-and-p-500-companies-financials/constituents-financials_json/data/ddf1c04b0ad45e44f976c1f32774ed9a/constituents-financials_json.json?fbclid=IwAR03-dtqPvXAiITWjGLAuWN_qLK2aYd0Lhhk_Q5lMKh3cIUVW-KfgNwa4Fs" + str(x)
+#     url = 'https://pkgstore.datahub.io/core/s-and-p-500-companies-financials/constituents-financials_json/data/ddf1c04b0ad45e44f976c1f32774ed9a/constituents-financials_json.json?fbclid=IwAR03-dtqPvXAiITWjGLAuWN_qLK2aYd0Lhhk_Q5lMKh3cIUVW-KfgNwa4Fs'
 #     url_company_1 = "https://financialmodelingprep.com/api/v3/historical-price-full/"
 #     url_company_2 = "?serietype=line"
 #     hdr = {
@@ -28,29 +28,44 @@ db.init_app(app)
 #     req = urllib.Request(url, headers=hdr)
 #     data = json.loads(urllib.urlopen(req).read())
 #     i = 0
-#     end = 500
-#     S_P = {}
+#     end = len(data)
 #     set_of_sectors = set()
+#     #handles S&P 500 Index data
+#     S_P = Company('S&P 500','None','None',0)
+#     url_SP = 'https://financialmodelingprep.com/api/v3/historical-price-full/index/%5EGSPC'
+#     req_SP = urllib.Request(url_SP, headers=hdr)
+#     data_SP = json.loads(urllib.urlopen(req_SP).read())['historical']
+#     for j in range(0,365):
+#         daily_data = DailyData(data_SP[j]['date'],data_SP[j]['close'])
+#         S_P.data_points.append(daily_data)
+#         db.session.add(daily_data)
+#     #going through all the companies in S&P 500 while putting them in sectors and getting their daily data over a year
 #     while (i < end):
 #         sector = None
-#         company = Company(data[i]['Name'],data[i]['Sector'],data[i]['Price'],date[i]['Symbol'],data[i]['Market Cap'])
+#         #create company
+#         company = Company(data[i]['Name'],data[i]['Sector'],data[i]['Symbol'],data[i]['Market Cap'])
+#         #create a sector or add the compnay to a sector
 #         if data[i]['Sector'] not in set_of_sectors:
-#             set_of_sectors.add(data[i])
+#             set_of_sectors.add(data[i]['Sector'])
 #             sector = Sector(data[i]['Sector'])
-#             sector.append(company)
+#             sector.companies.append(company)
 #         else:
 #             sector = Sector.query.filter_by(name = data[i]['Sector']).first()
-#             sector.append(company)
-#         req_company = urllib.Request(url_company_1 + data[i]['Name'] + url_company_2, headers=hdr)
+#             sector.companies.append(company)
+#         #get historical data on that company
+#         req_company = urllib.Request(url_company_1 + data[i]['Symbol'] + url_company_2, headers=hdr)
 #         data_company = json.loads(urllib.urlopen(req_company).read())
-#         data_company = data_company['historical'][len(data_company['historical'])-365:len(data_company['historical'])]
-#         for i in range(0,365):
-#             daily_data = DailyData(data_company[i]['date'],data_company[i]['price'])
-#             company.append(daily_data)
-#             db.session.add(daily_data)
+#         if len(data_company) > 0:
+#             print(data_company['symbol'])
+#             data_company = data_company['historical'][len(data_company['historical'])-365:len(data_company['historical'])]
+#             for j in range(0,len(data_company)):
+#                 daily_data = DailyData(data_company[j]['date'],data_company[j]['close'])
+#                 company.data_points.append(daily_data)
+#                 db.session.add(daily_data)
 #         db.session.add(sector)
 #         db.session.add(company)
 #         i += 1
+#     db.session.add(S_P)
 #     db.session.commit()
 
 def get_data(table):
