@@ -36,22 +36,6 @@
             <input type="submit" value="Employment Impact" name="Employment Impact" class="btn btn-outline-dark"/>
         </form>
     </nav>
-    <div class="container-fluid p-3 mx-auto">
-        <div class="d-flex justify-content-center align-items-center mx-auto" id="controls">
-            <select class="selectpicker mr-3" data-style="btn-outline-primary" id="selector" disabled>
-                <option>Cases</option>
-                <option>Deaths</option>
-                <option>Recoveries</option>
-            </select>
-            <input type="range" class="custom-range" value="0" step="1" id="slider" disabled>
-            <button type="button" class="btn btn-outline-primary ml-3" id="resume" disabled>Play</button>
-            <button type="button" class="btn btn-outline-primary ml-3" id="pause" disabled>Pause</button>
-        </div>
-        <div id="map" class="d-flex justify-content-center align-items-center mt-3"></div>
-        <div id="date-container" class="d-flex justify-content-center align-items-center mt-3"></div>
-    </div>
-    <i id="tooltip" data-toggle="tooltip" data-placement="top" data-animation="false" data-html="true"></i>
-    <i id="popover" data-toggle="popover" data-placement="right" data-html="true"></i>
 {% endblock %}
 
 {% block footer %}

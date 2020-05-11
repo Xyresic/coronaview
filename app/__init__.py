@@ -1,5 +1,5 @@
 import os, sys, csv
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request
 from tables import db, Countries, Cases, Deaths, Recovered, Economy
 
 app = Flask(__name__)
@@ -23,8 +23,11 @@ def get_data(table):
 
 @app.route('/', methods=['GET', 'POST'])
 def root():
+    if request.form.get('Employment Impact') == 'Employment Impact':
+        return render_template('index2.html')
+    elif request.form.get('World Cases') == 'World Cases':
+        return render_template("index.html")
     return render_template('index.html')
-
 
 @app.route('/data/<country>/<date>')
 def data(country, date):
