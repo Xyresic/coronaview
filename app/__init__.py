@@ -42,8 +42,9 @@ with app.app_context():
     #going through all the companies in S&P 500 while putting them in sectors and getting their daily data over a year
     while (i < end):
         sector = None
-        S_P.market_cap += data[i]['Market Cap']
-        company = Company(data[i]['Name'],data[i]['Sector'],data[i]['Price'],date[i]['Symbol'],data[i]['Market Cap'])
+        #create company
+        company = Company(data[i]['Name'],data[i]['Sector'],date[i]['Symbol'],data[i]['Market Cap'])
+        #create a sector or add the compnay to a sector
         if data[i]['Sector'] not in set_of_sectors:
             set_of_sectors.add(data[i]['Sector'])
             sector = Sector(data[i]['Sector'])
@@ -51,6 +52,7 @@ with app.app_context():
         else:
             sector = Sector.query.filter_by(name = data[i]['Sector']).first()
             sector.append(company)
+        #get historical data on that company
         req_company = urllib.Request(url_company_1 + data[i]['Name'] + url_company_2, headers=hdr)
         data_company = json.loads(urllib.urlopen(req_company).read())
         data_company = data_company['historical'][len(data_company['historical'])-365:len(data_company['historical'])]
