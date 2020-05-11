@@ -1,6 +1,6 @@
 import os, sys, csv
 from flask import Flask, render_template, jsonify
-from tables import db, Countries, Cases, Deaths, Recovered, Company
+from tables import db, Countries, Cases, Deaths, Recovered, Company, Sector, DailyData, SectorData
 import urllib.request as urllib
 import json
 
@@ -14,7 +14,7 @@ db.init_app(app)
 
 with app.app_context():
     db.create_all()
-    url = "https://pkgstore.datahub.io/core/s-and-p-500-companies-financials/constituents-financials_json/data/ddf1c04b0ad45e44f976c1f32774ed9a/constituents-financials_json.json?fbclid=IwAR03-dtqPvXAiITWjGLAuWN_qLK2aYd0Lhhk_Q5lMKh3cIUVW-KfgNwa4Fs" + str(x)
+    url = 'https://pkgstore.datahub.io/core/s-and-p-500-companies-financials/constituents-financials_json/data/ddf1c04b0ad45e44f976c1f32774ed9a/constituents-financials_json.json?fbclid=IwAR03-dtqPvXAiITWjGLAuWN_qLK2aYd0Lhhk_Q5lMKh3cIUVW-KfgNwa4Fs'
     url_company_1 = "https://financialmodelingprep.com/api/v3/historical-price-full/"
     url_company_2 = "?serietype=line"
     hdr = {
@@ -40,9 +40,6 @@ with app.app_context():
         S_P.append(daily_data)
         db.session.add(daily_data)
     #going through all the companies in S&P 500 while putting them in sectors and getting their daily data over a year
-    # sectors = {}
-    # for sector in set_of_sectors:
-    #     sectors[sector] = {}
     while (i < end):
         sector = None
         S_P.market_cap += data[i]['Market Cap']
@@ -58,10 +55,6 @@ with app.app_context():
         data_company = json.loads(urllib.urlopen(req_company).read())
         data_company = data_company['historical'][len(data_company['historical'])-365:len(data_company['historical'])]
         for j in range(0,365):
-            if j == 0:
-            #     sectors[sector][data_company[j]['date']] = [data_company[j]['price'])]
-            # else:
-            #     sectors[sector][data_company[j]['date']].append(data_company[j]['price'])
             daily_data = DailyData(data_company[j]['date'],data_company[j]['price'])
             company.append(daily_data)
             db.session.add(daily_data)

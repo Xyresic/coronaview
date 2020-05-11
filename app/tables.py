@@ -66,7 +66,7 @@ class Recovered(db.Model):
 class Company(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(10), nullable=False)
-    sector = db.Column(db.String(10), nullable=False)
+    sector_name = db.Column(db.String(10), nullable=False)
     price = db.Column(db.Integer, nullable=False)
     symbol = db.Column(db.String(10), nullable=False)
     market_cap = db.Column(db.Integer, nullable=False)
