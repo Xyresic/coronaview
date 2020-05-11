@@ -399,7 +399,8 @@ let advance = () => {
 
         let hover = document.querySelectorAll(':hover');
         let country = hover[hover.length - 1];
-        if (country !== undefined && country.tagName == 'path') {
+        console.log(country);
+        if (country !== undefined && country.tagName == 'path' && country.__data__.properties.name != center) {
             let t = d3.select('#tooltip');
             switch (mode) {
                 case 'Cases':
