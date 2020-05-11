@@ -158,3 +158,18 @@ EricL -- 2020-05-10 19:04
 
 MichaelZ -- 2020-05-11 04:30
     - Update employment impact tab on navbar with appropriate html template
+
+EricL -- 2020-05-11 7:43
+    - Fixed tooltip appearing on selected country while playing
+    - Brought repo up to standard:
+        - Updated requirements, included wheel
+        - Updated design doc:
+            - Marked scrapped ideas
+            - Struck out completed components
+            - Removed to-do list
+            - Updated component map
+            - Updated site map
+            - Updated database schema
+            - Updated data retrieval
+        - Added more extensive launch codes to readme
+    - Updated data

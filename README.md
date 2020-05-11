@@ -27,5 +27,5 @@ python3 ./app/__init__.py
 Open your browser of choice and go to http://localhost:5000/
 ### Updating Data
 ```shell script
-python ./app/db_builder.py
+python3 ./app/db_builder.py
 ```
