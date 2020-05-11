@@ -85,6 +85,7 @@ class Sector(db.Model):
     name = db.Column(db.String(10), nullable=False)
     #relationships
     companies = db.relationship('Company', backref='sector')
+    data_points = db.relationship('SectorData', backref='sector')
     def __init__(self,name):
         self.name = name
 
@@ -93,6 +94,15 @@ class DailyData(db.Model):
     date = db.Column(db.String(10), nullable=False)
     price = db.Column(db.Integer, nullable=False)
     company_id =  db.Column(db.Integer, db.ForeignKey('company.id'), nullable=False)
+    def __init__(self,date,price):
+        self.date = date
+        self.price = price
+
+class SectorData(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.String(10), nullable=False)
+    price = db.Column(db.Integer, nullable=False)
+    sector_id =  db.Column(db.Integer, db.ForeignKey('sector.id'), nullable=False)
     def __init__(self,date,price):
         self.date = date
         self.price = price
