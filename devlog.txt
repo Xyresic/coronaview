@@ -152,3 +152,6 @@ EricL -- 2020-05-10 19:20
 JosephL -- 2020-05-09 22:31
     - fixed bugs related to pulling data
     - succesfully pulled all the data and built it in to the database
+
+MichaelZ -- 2020-05-11 04:30
+    - Update employment impact tab on navbar with appropriate html template
