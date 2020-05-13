@@ -175,6 +175,7 @@ EricL -- 2020-05-11 7:43
     - Updated data
 
 JosephL -- 2020-05-11 18:13
+    - decided to recomplete scrapped work with extra time wtih team
     - found corrupted data in database
     - began fixing data because of highly inconsistent json files
 
