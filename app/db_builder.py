@@ -118,30 +118,30 @@ def fill_db(file_reader, table):
     db.session.commit()
 
 
-# with app.app_context():
-#     db.drop_all()
-#     db.create_all()
-#     with urlopen(pop_url) as request:
-#         pop_reader = retrieve_reader(request)
-#         next(pop_reader)
-#         for line in pop_reader:
-#             country = Countries(line[1], int(line[2]))
-#             db.session.add(country)
-#     with urlopen(cases_url) as request:
-#         cases_reader = retrieve_reader(request)
-#         next(cases_reader)
-#         next(cases_reader)
-#         fill_db(cases_reader, Cases)
-#     with urlopen(deaths_url) as request:
-#         deaths_reader = retrieve_reader(request)
-#         next(deaths_reader)
-#         next(deaths_reader)
-#         fill_db(deaths_reader, Deaths)
-#     with urlopen(recovered_url) as request:
-#         recovered_reader = retrieve_reader(request)
-#         next(recovered_reader)
-#         next(recovered_reader)
-#     fill_db(recovered_reader, Recovered)
+with app.app_context():
+    db.drop_all()
+    db.create_all()
+    with urlopen(pop_url) as request:
+        pop_reader = retrieve_reader(request)
+        next(pop_reader)
+        for line in pop_reader:
+            country = Countries(line[1], int(line[2]))
+            db.session.add(country)
+    with urlopen(cases_url) as request:
+        cases_reader = retrieve_reader(request)
+        next(cases_reader)
+        next(cases_reader)
+        fill_db(cases_reader, Cases)
+    with urlopen(deaths_url) as request:
+        deaths_reader = retrieve_reader(request)
+        next(deaths_reader)
+        next(deaths_reader)
+        fill_db(deaths_reader, Deaths)
+    with urlopen(recovered_url) as request:
+        recovered_reader = retrieve_reader(request)
+        next(recovered_reader)
+        next(recovered_reader)
+    fill_db(recovered_reader, Recovered)
 
 with app.app_context():
     dates = ['2020-05-13', '2020-05-11', '2020-05-09', '2020-05-07', '2020-05-05', '2020-05-03', '2020-05-01', '2020-04-29', '2020-04-27', '2020-04-25',

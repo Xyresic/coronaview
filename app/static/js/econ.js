@@ -10,7 +10,7 @@ var svg = d3.select("#my_dataviz")
     .attr("transform",
           "translate(" + margin.left + "," + margin.top + ")");
 //Read the data
-d3.csv("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/connectedscatter.csv",
+d3.json("/data/sector",
   // When reading the csv, I must format variables:
   function(d){
     return { date : d3.timeParse("%Y-%m-%d")(d.date), value : d.value }

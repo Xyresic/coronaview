@@ -29,16 +29,18 @@ db.init_app(app)
 #         for sector_day in sector_data.keys():
 #             data = DailyData(sector_day,sum(sector_data[sector_day])/len(sector_data[sector_day]))
 #             sector.data_points.append(data)
-#         db.session.commit()
+#         db.session.add(sector)
+#     db.session.commit()
 
+#printing companies data to confirm successful data parse
 # with app.app_context():
 #     companies = Company.query.all()
 #     for company in companies:
 #         if len(company.data_points) > 0:
 #             print(company.data_points[0].date)
-    # sector = Sector.query.filter_by(name = 'Industrials').first()
-    # for data in sector.data_points:
-    #     print(data.date)
+#     sector = Sector.query.filter_by(name = 'Industrials').first()
+#     for data in sector.data_points:
+#         print(data.date)
 
 
 def get_data(table):
@@ -60,13 +62,13 @@ def get_data(table):
             data[date][country.name] = [0 if cases == 0 else (entry.amount / cases), entry.amount]
     return data
 
-def get_sector_data(table,sector_name):
+def get_sector_data(sector_name):
     sector = Sector.query.filter_by(name = sector_name)
     data_points = sector.sector_data
     data = {}
     for point in data_points:
-        print('')
-    return 0
+        data[date]=data.price
+    return data
 
 @app.route('/', methods=['GET', 'POST'])
 def root():
@@ -101,9 +103,9 @@ def deaths():
 def recoveries():
     return jsonify(get_data(Recovered))
 
-@app.route('/data/<sector_name>')
+@app.route('/data/sector/<sector_name>')
 def sectors(sector_name):
-    return jsonify(get_data(Sector,sector_name))
+    return jsonify(get_sector_data(sector_name))
 
 if __name__ == '__main__':
     app.debug = True
