@@ -173,3 +173,10 @@ EricL -- 2020-05-11 7:43
             - Updated data retrieval
         - Added more extensive launch codes to readme
     - Updated data
+
+JosephL -- 2020-05-11 18:13
+    - found corrupted data in database
+    - began fixing data because of highly inconsistent json files
+
+JosephL -- 2020-05-12 15:12
+    - fixed data and working on d3 to show the data
