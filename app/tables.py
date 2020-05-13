@@ -62,3 +62,36 @@ class Recovered(db.Model):
         self.amount = amount
         self.country_id = country_id
         self.cases_id = cases_id
+
+class Company(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(10), nullable=False)
+    sector_name = db.Column(db.String(10), nullable=False)
+    symbol = db.Column(db.String(10), nullable=False)
+    market_cap = db.Column(db.Integer, nullable=False)
+    sector_id = db.Column(db.Integer, db.ForeignKey('sector.id'))
+    #relationships
+    data_points = db.relationship('DailyData', backref='company')
+    def __init__(self, sector_name, name, symbol, market_cap):
+        self.sector_name = sector_name
+        self.name = name
+        self.symbol = symbol
+        self.market_cap = market_cap
+
+class Sector(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(10), nullable=False)
+    #relationships
+    companies = db.relationship('Company', backref='sector')
+    # data_points = db.relationship('SectorData', backref='sector')
+    def __init__(self,name):
+        self.name = name
+
+class DailyData(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.String(10), nullable=False)
+    price = db.Column(db.Integer, nullable=False)
+    company_id =  db.Column(db.Integer, db.ForeignKey('company.id'))
+    def __init__(self,date,price):
+        self.date = date
+        self.price = price
