@@ -63,21 +63,20 @@ def get_data(table):
     return data
 
 def get_sector_data(sector_name):
-    sector = Sector.query.filter_by(name = sector_name)
-    data_points = sector.sector_data
+    sector = Sector.query.filter_by(name = sector_name).first()
+    data_points = sector.data_points
     data = {}
     for point in data_points:
-        data[date]=data.price
+        data[point.date]=point.price
     return data
 
 @app.route('/', methods=['GET', 'POST'])
 def root():
     return render_template('index.html')
 
-@app.route('/econ', methods=['GET', 'POST'])
-def econ():
-    return render_template('econ.html')
-
+@app.route('/econ/<sector_name>', methods=['GET', 'POST'])
+def econ(sector_name):
+    return render_template('econ.html',sector_name = sector_name)
 
 @app.route('/data/<country>')
 def data(country):
