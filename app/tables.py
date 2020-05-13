@@ -65,6 +65,7 @@ class Recovered(db.Model):
 
 class Company(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    #NAME AND SECTOR_NAME ARE SWITCHED IN THE DATABASE
     name = db.Column(db.String(10), nullable=False)
     sector_name = db.Column(db.String(10), nullable=False)
     symbol = db.Column(db.String(10), nullable=False)
@@ -72,7 +73,7 @@ class Company(db.Model):
     sector_id = db.Column(db.Integer, db.ForeignKey('sector.id'))
     #relationships
     data_points = db.relationship('DailyData', backref='company')
-    def __init__(self, sector_name, name, symbol, market_cap):
+    def __init__(self, name, sector_name, symbol, market_cap):
         self.sector_name = sector_name
         self.name = name
         self.symbol = symbol
@@ -83,6 +84,7 @@ class Sector(db.Model):
     name = db.Column(db.String(10), nullable=False)
     #relationships
     companies = db.relationship('Company', backref='sector')
+    data_points = db.relationship('DailyData', backref = 'sector')
     # data_points = db.relationship('SectorData', backref='sector')
     def __init__(self,name):
         self.name = name
@@ -92,6 +94,7 @@ class DailyData(db.Model):
     date = db.Column(db.String(10), nullable=False)
     price = db.Column(db.Integer, nullable=False)
     company_id =  db.Column(db.Integer, db.ForeignKey('company.id'))
+    sector_id = db.Column(db.Integer,db.ForeignKey('sector.id'))
     def __init__(self,date,price):
         self.date = date
         self.price = price
