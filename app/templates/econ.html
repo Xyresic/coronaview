@@ -4,15 +4,6 @@
     COVID-19 Progression
 {% endblock %}
 {% block style %}
-<style> /* set the CSS */
-
-.line {
-  fill: none;
-  stroke: steelblue;
-  stroke-width: 2px;
-}
-
-</style>
 {% endblock %}
 {% block head %}
     <link rel="shortcut icon" href="#">
@@ -22,8 +13,7 @@
 {% block body %}
     <div class="container-fluid p-3 mx-auto">
       <!-- Create a div where the graph will take place -->
-      {{sector_name}} Sector Performance Over Past 6 Months
-
+      <span id = "yo"> {{sector_name}} </span>Sector Performance Over Past 6 Months
       <div id="my_dataviz"></div>
     </div>
 {% endblock %}
