@@ -12,13 +12,15 @@ var svg = d3.select("#my_dataviz")
     .attr("transform",
          `${"translate(" + margin.left + "," + margin.top + ")"}`);
 
+var parseTime = d3.timeParse("%Y-%m-%d");
 //Read the data
 d3.json("/data/sector/Industrials").then(d => {
+      d = d['points']
       console.log(d)
-      var parseTime = d3.timeParse("%Y-%m-%d");
-      for (i = 0; i < d['date'].length; i++) {
-        d['date'][i] = parseTime(d['date'][i])
-      }
+      d.forEach(function(da) {
+           da['date'] = parseTime(da['date']);
+           da['price'] = +da['price'];
+      });
       console.log(d)
       // Add X axis --> it is a date format
       var x = d3.scaleTime()

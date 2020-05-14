@@ -49,11 +49,12 @@ def get_sector_data(sector_name):
     sector = Sector.query.filter_by(name = sector_name).first()
     data_points = sector.data_points
     data = {}
-    data['date'] = []
-    data['price'] = []
+    data['points'] = []
     for point in data_points:
-        data['date'].append(point.date)
-        data['price'].append(point.price)
+        sub_data = {}
+        sub_data['date'] = point.date
+        sub_data['price'] = point.price
+        data['points'].append(sub_data)
     return data
 
 @app.route('/', methods=['GET', 'POST'])
