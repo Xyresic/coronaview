@@ -14,8 +14,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = 'False'
 db.init_app(app)
 
 
-
-#printing companies data to confirm successful data parse
+# printing companies data to confirm successful data parse
 # with app.app_context():
 #     companies = Company.query.all()
 #     for company in companies:
@@ -45,8 +44,9 @@ def get_data(table):
             data[date][country.name] = [0 if cases == 0 else (entry.amount / cases), entry.amount]
     return data
 
+
 def get_sector_data(sector_name):
-    sector = Sector.query.filter_by(name = sector_name).first()
+    sector = Sector.query.filter_by(name=sector_name).first()
     data_points = sector.data_points
     data = {}
     data['points'] = []
@@ -57,13 +57,18 @@ def get_sector_data(sector_name):
         data['points'].append(sub_data)
     return data
 
+
 @app.route('/', methods=['GET', 'POST'])
 def root():
     return render_template('index.html')
 
+
 @app.route('/econ/<sector_name>', methods=['GET', 'POST'])
 def econ(sector_name):
-    return render_template('econ.html',sector_name = sector_name)
+    if sector_name == 'Industrials' or sector_name == 'Financials':
+        sector_name = sector_name[:-1]
+    return render_template('econ.html', sector_name=sector_name)
+
 
 @app.route('/data/<country>')
 def data(country):
@@ -89,9 +94,11 @@ def deaths():
 def recoveries():
     return jsonify(get_data(Recovered))
 
+
 @app.route('/data/sector/<sector_name>')
 def sectors(sector_name):
     return jsonify(get_sector_data(sector_name))
+
 
 if __name__ == '__main__':
     app.debug = True

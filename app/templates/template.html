@@ -21,71 +21,56 @@
 </head>
 
 <style>
+    li {
+        position: relative;
+        padding-left: 50px;
+        padding-right: 50px;
+    }
 
-  li {
-      position: relative;
-      padding-left: 50px;
-      padding-right: 50px;
-  }
+    .dropdown-item {
+        padding-left: 50px;
+        padding-right: 50px;
+    }
 
-  .dropdown-item {
-      padding-left: 50px;
-      padding-right: 50px;
-  }
+    #secondary {
+        background-color: #e3f2fd;
+    }
 </style>
 
 <body>
 
-  <nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-center">
-      <a class="navbar-brand">COVID-19 Progression</a>
-  </nav>
-
-  <nav class="navbar navbar-expand-sm bg-dark navbar-dark justify-content-center">
-  <ul class="navbar-nav">
-    <li class="nav-item">
-      <a class="nav-link" href="/">Global Impact</a>
-    </li>
-
-    <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-        Economic Impact
-      </a>
-      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <a class="dropdown-item" href="/econ/Industrials">Industrials</a>
-        <a class="dropdown-item" href="/econ/Health Care">Health Care</a>
-        <a class="dropdown-item" href="/econ/Information Technology">Information Technology</a>
-        <a class="dropdown-item" href="/econ/Consumer Discretionary">Consumer Discretionary</a>
-        <a class="dropdown-item" href="/econ/Utilities">Utilities</a>
-        <a class="dropdown-item" href="/econ/Financials">Financials</a>
-        <a class="dropdown-item" href="/econ/Materials">Materials</a>
-        <a class="dropdown-item" href="/econ/Real Estate">Real Estate</a>
-        <a class="dropdown-item" href="/econ/Consumer Staples">Consumer Staples</a>
-        <a class="dropdown-item" href="/econ/Energy">Energy</a>
-        <a class="dropdown-item" href="/econ/Telecommunication Services">Telecommunication Services</a>
-
-      </div>
-    </li>
-  </ul>
+<nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-center">
+    <a class="navbar-brand">CoronaView<sup>TM</sup></a>
 </nav>
 
+<nav class="navbar navbar-expand-sm bg navbar justify-content-center" id="secondary">
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" href="/">Global Impact</a>
+        </li>
 
-<!--
-
-    <nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-left">
-      <div class = "nav-item">
-        <a href="/" class="btn btn-secondary btn-lg" role="button">World Impact</a>
-      </div>
-      <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle btn-lg" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          U.S. Stock Market Impact
-        </button>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a class="dropdown-item" href="{{ url_for('econ', sector_name = 'Industrials') }}">Industrials</a>
-        </div>
-      </div>
-    </nav> -->
-    {% block body %}
-    {% endblock %}
-    {% block footer %}{% endblock %}
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                Economic Impact
+            </a>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="/econ/Industrials">Industrial</a>
+                <a class="dropdown-item" href="/econ/Health Care">Health Care</a>
+                <a class="dropdown-item" href="/econ/Information Technology">Information Technology</a>
+                <a class="dropdown-item" href="/econ/Consumer Discretionary">Consumer Discretionary</a>
+                <a class="dropdown-item" href="/econ/Utilities">Utilities</a>
+                <a class="dropdown-item" href="/econ/Financials">Financial</a>
+                <a class="dropdown-item" href="/econ/Materials">Materials</a>
+                <a class="dropdown-item" href="/econ/Real Estate">Real Estate</a>
+                <a class="dropdown-item" href="/econ/Consumer Staples">Consumer Staples</a>
+                <a class="dropdown-item" href="/econ/Energy">Energy</a>
+                <a class="dropdown-item" href="/econ/Telecommunication Services">Telecommunication Services</a>
+            </div>
+        </li>
+    </ul>
+</nav>
+{% block body %}
+{% endblock %}
+{% block footer %}{% endblock %}
 </body>
 </html>

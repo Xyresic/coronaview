@@ -179,7 +179,7 @@ DavidL 2020-05-11 12:19
     - Used dropdown feature to help users visualize economic data
 
 JosephL -- 2020-05-11 18:13
-    - decided to recomplete scrapped work with extra time wtih team
+    - decided to recomplete scrapped work with extra time with team
     - found corrupted data in database
     - began fixing data because of highly inconsistent json files
 
