@@ -118,30 +118,30 @@ def fill_db(file_reader, table):
     db.session.commit()
 
 
-with app.app_context():
-    db.drop_all()
-    db.create_all()
-    with urlopen(pop_url) as request:
-        pop_reader = retrieve_reader(request)
-        next(pop_reader)
-        for line in pop_reader:
-            country = Countries(line[1], int(line[2]))
-            db.session.add(country)
-    with urlopen(cases_url) as request:
-        cases_reader = retrieve_reader(request)
-        next(cases_reader)
-        next(cases_reader)
-        fill_db(cases_reader, Cases)
-    with urlopen(deaths_url) as request:
-        deaths_reader = retrieve_reader(request)
-        next(deaths_reader)
-        next(deaths_reader)
-        fill_db(deaths_reader, Deaths)
-    with urlopen(recovered_url) as request:
-        recovered_reader = retrieve_reader(request)
-        next(recovered_reader)
-        next(recovered_reader)
-    fill_db(recovered_reader, Recovered)
+# with app.app_context():
+#     db.drop_all()
+#     db.create_all()
+#     with urlopen(pop_url) as request:
+#         pop_reader = retrieve_reader(request)
+#         next(pop_reader)
+#         for line in pop_reader:
+#             country = Countries(line[1], int(line[2]))
+#             db.session.add(country)
+#     with urlopen(cases_url) as request:
+#         cases_reader = retrieve_reader(request)
+#         next(cases_reader)
+#         next(cases_reader)
+#         fill_db(cases_reader, Cases)
+#     with urlopen(deaths_url) as request:
+#         deaths_reader = retrieve_reader(request)
+#         next(deaths_reader)
+#         next(deaths_reader)
+#         fill_db(deaths_reader, Deaths)
+#     with urlopen(recovered_url) as request:
+#         recovered_reader = retrieve_reader(request)
+#         next(recovered_reader)
+#         next(recovered_reader)
+#     fill_db(recovered_reader, Recovered)
 
 with app.app_context():
     dates = ['2020-05-13', '2020-05-11', '2020-05-09', '2020-05-07', '2020-05-05', '2020-05-03', '2020-05-01', '2020-04-29', '2020-04-27', '2020-04-25',
@@ -221,4 +221,22 @@ with app.app_context():
         db.session.add(company)
         i += 1
     db.session.add(S_P)
+    db.session.commit()
+
+    # updates the sector data
+    sectors = Sector.query.all()
+    for sector in sectors:
+        sector_data = {}
+        companies = Company.query.filter_by(sector_name = sector.name).all()
+        for company in companies:
+            data_points = company.data_points
+            for data in data_points:
+                if data.date not in sector_data.keys():
+                    sector_data[data.date] = [data.price]
+                else:
+                    sector_data[data.date].append(data.price)
+        for sector_day in sector_data.keys():
+            data = DailyData(sector_day,sum(sector_data[sector_day])/len(sector_data[sector_day]))
+            sector.data_points.append(data)
+        db.session.add(sector)
     db.session.commit()

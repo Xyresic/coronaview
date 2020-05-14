@@ -13,24 +13,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = 'False'
 # start database
 db.init_app(app)
 
-#updates the sector data
-# with app.app_context():
-#     sectors = Sector.query.all()
-#     for sector in sectors:
-#         sector_data = {}
-#         companies = Company.query.filter_by(sector_name = sector.name).all()
-#         for company in companies:
-#             data_points = company.data_points
-#             for data in data_points:
-#                 if data.date not in sector_data.keys():
-#                     sector_data[data.date] = [data.price]
-#                 else:
-#                     sector_data[data.date].append(data.price)
-#         for sector_day in sector_data.keys():
-#             data = DailyData(sector_day,sum(sector_data[sector_day])/len(sector_data[sector_day]))
-#             sector.data_points.append(data)
-#         db.session.add(sector)
-#     db.session.commit()
+
 
 #printing companies data to confirm successful data parse
 # with app.app_context():
@@ -66,8 +49,11 @@ def get_sector_data(sector_name):
     sector = Sector.query.filter_by(name = sector_name).first()
     data_points = sector.data_points
     data = {}
+    data['date'] = []
+    data['price'] = []
     for point in data_points:
-        data[point.date]=point.price
+        data['date'].append(point.date)
+        data['price'].append(point.price)
     return data
 
 @app.route('/', methods=['GET', 'POST'])
