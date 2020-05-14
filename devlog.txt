@@ -187,7 +187,10 @@ DavidL 2020-05-12 09:45
     - Fixed Navbar
 
 JosephL -- 2020-05-12 15:12
-    - Fixed data and working on d3 to show the data
+    - Fixed data and finished d3 to show the data
 
 EricL -- 2020-05-14 00:05
     - Added text to y-axis
+
+JosephL -- 2020-5-14 00:12
+    - finished editing and filming video
