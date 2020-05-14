@@ -2,6 +2,8 @@
 This is a visualization of the spread of COVID-19 with data incorporated into an interactable world map, 
 providing a broad overview with the ability to obtain more data by clicking on a region.
 
+[Video Link Here!](https://youtu.be/P6Zl_F6nxYw)
+
 ## Roster
 David Lupea: Project Manager  
 Joseph Lee: Backend  
