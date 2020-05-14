@@ -183,5 +183,8 @@ JosephL -- 2020-05-11 18:13
     - found corrupted data in database
     - began fixing data because of highly inconsistent json files
 
+DavidL 2020-05-12 09:45
+    - Fixed Navbar
+
 JosephL -- 2020-05-12 15:12
     - fixed data and working on d3 to show the data
