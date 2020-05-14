@@ -179,12 +179,15 @@ DavidL 2020-05-11 12:19
     - Used dropdown feature to help users visualize economic data
 
 JosephL -- 2020-05-11 18:13
-    - decided to recomplete scrapped work with extra time with team
-    - found corrupted data in database
-    - began fixing data because of highly inconsistent json files
+    - Decided to recomplete scrapped work with extra time with team
+    - Found corrupted data in database
+    - Began fixing data because of highly inconsistent json files
 
 DavidL 2020-05-12 09:45
     - Fixed Navbar
 
 JosephL -- 2020-05-12 15:12
-    - fixed data and working on d3 to show the data
+    - Fixed data and working on d3 to show the data
+
+EricL -- 2020-05-14 00:05
+    - Added text to y-axis

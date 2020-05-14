@@ -26,9 +26,10 @@ d3.json(url).then(d => {
         da['date'] = parseTime(da['date']);
         da['price'] = +da['price'];
     });
-    console.log(d.sort((a,b) => {
+    d.sort((a,b) => {
         return new Date(a.date).getTime() - new Date(b.date).getTime();
-    }));
+    });
+    Object.assign(d, {y: '$ Close'})
     // Add X axis --> it is a date format
     var x = d3.scaleTime()
         .domain(d3.extent(d, function (a) {
@@ -47,6 +48,11 @@ d3.json(url).then(d => {
     svg.append("g")
         .call(d3.axisLeft(y));
 
+    svg.append('text')
+        .attr('class','small')
+        .attr('transform', 'translate(-50,3)')
+        .text(d.y);
+
     // Add the line
     svg.append("path")
         .datum(d)
@@ -60,5 +66,5 @@ d3.json(url).then(d => {
             .y(function (d) {
                 return y(d['price'])
             })
-        )
+        );
 });
