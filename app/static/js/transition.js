@@ -6,11 +6,12 @@ let slider = document.getElementById('slider');
 let map_url = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-10m.json';
 let width = 1000;
 let height = 500;
-let date, timer, center, range;
+let date = new Date('2020-01-22T00:00:00'), timer, center;
+let data_full = {}, data_deaths = {}, data_recovered = {};
 let height_only = ['United States of America', 'France', 'Russia', 'Fiji'];
 let mode = 'Cases';
 
-let get_date = () => {
+let get_date = (date) => {
     return date.toISOString().slice(0, 10);
 };
 let get_date_formatted = () => {
@@ -22,28 +23,50 @@ let path = d3.geoPath(d3.geoEqualEarth()
     .center([0, 0])
     .translate([width / 2, height / 2]));
 
-let data_full = d3.json('/data/cases').then(d => {
-    data_full = d;
-    $('.selectpicker').prop('disabled', false);
-    $('.selectpicker').selectpicker('refresh');
-    range = Object.keys(data_full).length;
-    slider.setAttribute('max', range - 1);
-    slider.removeAttribute('disabled');
-    mode = 'Cases';
-    render(data_full);
-});
-let data_deaths = d3.json('/data/deaths');
-let data_recovered = d3.json('/data/recoveries');
+date.setDate(date.getDate() + range - 1);
+let max_date = get_date(date);
+date = new Date('2020-01-22T00:00:00');
+
+let next_request = (data, map, date) => {
+    map[get_date(date)] = data;
+    if (get_date(date) === max_date) {
+        if (map === data_full) {
+            $('.selectpicker').prop('disabled', false);
+            $('.selectpicker').selectpicker('refresh');
+             slider.setAttribute('max', range - 1);
+            slider.removeAttribute('disabled');
+            mode = 'Cases';
+            render(data_full);
+            let d1 = new Date('2020-01-22T00:00:00'), d2 = new Date('2020-01-22T00:00:00');
+            d3.json(`/data/deaths/${get_date(d1)}`).then(d => next_request(d, data_deaths, d1));
+            d3.json(`/data/recoveries/${get_date(d2)}`).then(d => next_request(d, data_recovered, d2));
+        } else if (map === data_deaths) {
+            $('#deaths-option').prop('disabled', false);
+            $('#selector').selectpicker('refresh');
+        } else {
+            $('#recovered-option').prop('disabled', false);
+            $('#selector').selectpicker('refresh');
+        }
+    } else {
+        date.setDate(date.getDate() + 1);
+        if (map === data_full) d3.json(`/data/cases/${get_date(date)}`).then(d => next_request(d, map, date));
+        else if (map === data_deaths) d3.json(`/data/deaths/${get_date(date)}`).then(d => next_request(d, map, date));
+        else d3.json(`/data/recoveries/${get_date(date)}`).then(d => next_request(d, map, date));
+    }
+}
+
+d3.json(`/data/cases/${get_date(date)}`).then(d => next_request(d, data_full, date));
+
 
 let map_data = d3.json(map_url)
 let get_percent = (d, data) => {
-    let data_dated = data[get_date()];
+    let data_dated = data[get_date(date)];
     if (data_dated.hasOwnProperty(d.properties.name)) {
         return data_dated[d.properties.name][0];
     } else return undefined;
 };
 let get_cases = (d, data) => {
-    let data_dated = data[get_date()];
+    let data_dated = data[get_date(date)];
     if (data_dated !== undefined && data_dated.hasOwnProperty(d.properties.name)) {
         return data_dated[d.properties.name][1].toLocaleString();
     } else return '<i>unknown</i>';
@@ -376,12 +399,12 @@ let update_map = () => {
                 .duration(100).attr('fill', d => color(get_percent(d, data_full)));
             break;
         case 'Deaths':
-            data_deaths.then(D => has_data.transition()
-                .duration(100).attr('fill', d => color(get_percent(d, D))));
+            has_data.transition()
+                .duration(100).attr('fill', d => color(get_percent(d, data_deaths)));
             break;
         default:
-            data_recovered.then(D => has_data.transition()
-                .duration(100).attr('fill', d => color(get_percent(d, D))));
+            has_data.transition()
+                .duration(100).attr('fill', d => color(get_percent(d, data_recovered)));
     }
 };
 
@@ -460,18 +483,14 @@ let change_data = () => {
             render(data_full);
             break;
         case 'Deaths':
-            data_deaths.then(d => {
-                color.domain([0,0.2])
-                    .interpolator(d3.interpolateRgbBasis(['#cccccd', 'purple', 'indigo']));
-                render(d);
-            });
+            color.domain([0,0.2])
+                .interpolator(d3.interpolateRgbBasis(['#cccccd', 'purple', 'indigo']));
+            render(data_deaths);
             break;
         default:
-            data_recovered.then(d => {
-                color.domain([0,1])
-                    .interpolator(d3.interpolateRgbBasis(['#cccccd', 'lightblue', 'darkblue']));
-                render(d);
-            });
+            color.domain([0,1])
+                .interpolator(d3.interpolateRgbBasis(['#cccccd', 'lightblue', 'darkblue']));
+            render(data_recovered);
     }
 };
 
@@ -495,12 +514,3 @@ resume_btn.addEventListener('click', advance);
 pause_btn.addEventListener('click', pause)
 slider.addEventListener('input', update);
 selector.addEventListener('change', change_data);
-
-data_deaths.then(() => {
-    $('#deaths-option').prop('disabled', false);
-    $('#selector').selectpicker('refresh');
-});
-data_recovered.then(() => {
-    $('#recovered-option').prop('disabled', false);
-    $('#selector').selectpicker('refresh');
-});

@@ -13,29 +13,21 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = 'False'
 db.init_app(app)
 
 
-def get_data(table):
+def get_data(table, date):
     data = {}
-    if table == Cases:
-        for entry in table.query.all():
-            date = entry.date
-            country = entry.country
-            if date not in data:
-                data[date] = {}
-            data[date][country.name] = [entry.amount / country.population, entry.amount]
-    else:
-        for entry in table.query.all():
-            date = entry.date
-            country = entry.country
-            if date not in data:
-                data[date] = {}
+    for entry in table.query.filter_by(date=date).all():
+        country = entry.country
+        if table == Cases:
+            data[country.name] = [entry.amount / country.population, entry.amount]
+        else:
             cases = entry.cases.amount
-            data[date][country.name] = [0 if cases == 0 else (entry.amount / cases), entry.amount]
+            data[country.name] = [0 if cases == 0 else (entry.amount / cases), entry.amount]
     return data
 
 
 @app.route('/', methods=['GET', 'POST'])
 def root():
-    return render_template('index.html')
+    return render_template('index.html', range=len(Cases.query.filter_by(country_id=2).all()))
 
 
 @app.route('/data/<country>')
@@ -48,19 +40,19 @@ def data(country):
     return jsonify(json)
 
 
-@app.route('/data/cases')
-def cases():
-    return jsonify(get_data(Cases))
+@app.route('/data/cases/<date>')
+def cases(date):
+    return jsonify(get_data(Cases, date))
 
 
-@app.route('/data/deaths')
-def deaths():
-    return jsonify(get_data(Deaths))
+@app.route('/data/deaths/<date>')
+def deaths(date):
+    return jsonify(get_data(Deaths, date))
 
 
-@app.route('/data/recoveries')
-def recoveries():
-    return jsonify(get_data(Recovered))
+@app.route('/data/recoveries/<date>')
+def recoveries(date):
+    return jsonify(get_data(Recovered, date))
 
 
 if __name__ == '__main__':
