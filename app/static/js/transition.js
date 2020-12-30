@@ -461,7 +461,7 @@ let update = () => {
 
     if (timer != null) timer.stop();
 
-    if (parseInt(slider.value) < range) {
+    if (parseInt(slider.value) < range - 1) {
         resume_btn.removeAttribute('disabled');
         resume_btn.style.pointerEvents = null;
     } else {
