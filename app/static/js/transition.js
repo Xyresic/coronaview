@@ -27,7 +27,7 @@ let data_full = d3.json('/data/cases').then(d => {
     $('.selectpicker').prop('disabled', false);
     $('.selectpicker').selectpicker('refresh');
     range = Object.keys(data_full).length;
-    slider.setAttribute('max', range);
+    slider.setAttribute('max', range - 1);
     slider.removeAttribute('disabled');
     mode = 'Cases';
     render(data_full);
@@ -50,7 +50,7 @@ let get_cases = (d, data) => {
 };
 
 let color = d3.scaleSequential()
-    .domain([0, 0.005])
+    .domain([0, 0.025])
     .interpolator(d3.interpolateRgbBasis(['#cccccd', 'red', 'firebrick']))
     .unknown('#ccc');
 
@@ -285,7 +285,7 @@ let zoom = function(d) {
 
 let render = (data) => {
     if (timer != null) timer.stop();
-    date = new Date('2020-01-22');
+    date = new Date('2020-01-22T00:00:00');
     d3.selectAll('svg *').remove();
     resume_btn.removeAttribute('disabled');
     resume_btn.style.pointerEvents = null;
@@ -347,7 +347,7 @@ let render = (data) => {
 };
 
 let pause = () => {
-    date = new Date('2020-01-22');
+    date = new Date('2020-01-22T00:00:00');
     date.setDate(date.getDate() + parseInt(slider.value));
     d3.select('.date').text(get_date_formatted());
 
@@ -391,7 +391,7 @@ let advance = () => {
     pause_btn.removeAttribute('disabled');
     pause_btn.style.pointerEvents = null;
 
-    let slider_pos = parseInt(slider.value)
+    let slider_pos = parseInt(slider.value);
 
     timer = d3.interval((elapsed) => {
         date.setDate(date.getDate() + 1);
@@ -399,7 +399,6 @@ let advance = () => {
 
         let hover = document.querySelectorAll(':hover');
         let country = hover[hover.length - 1];
-        console.log(country);
         if (country !== undefined && country.tagName == 'path' && country.__data__.properties.name != center) {
             let t = d3.select('#tooltip');
             switch (mode) {
@@ -424,7 +423,7 @@ let advance = () => {
 
         update_map();
 
-        if (elapsed > 150 * (range - slider_pos)) {
+        if (elapsed > 150 * (range - slider_pos - 1)) {
             timer.stop();
             pause_btn.setAttribute('disabled', '');
             pause_btn.style.pointerEvents = 'none';
@@ -433,7 +432,7 @@ let advance = () => {
 };
 
 let update = () => {
-    date = new Date('2020-01-22');
+    date = new Date('2020-01-22T00:00:00');
     date.setDate(date.getDate() + parseInt(slider.value));
     d3.select('.date').text(get_date_formatted());
 
@@ -456,7 +455,7 @@ let change_data = () => {
     mode = selector.value;
     switch (mode) {
         case 'Cases':
-            color.domain([0,0.005])
+            color.domain([0,0.025])
                 .interpolator(d3.interpolateRgbBasis(['#cccccd', 'red', 'firebrick']));
             render(data_full);
             break;
@@ -469,7 +468,7 @@ let change_data = () => {
             break;
         default:
             data_recovered.then(d => {
-                color.domain([0,0.5])
+                color.domain([0,1])
                     .interpolator(d3.interpolateRgbBasis(['#cccccd', 'lightblue', 'darkblue']));
                 render(d);
             });

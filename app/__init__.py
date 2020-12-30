@@ -1,9 +1,6 @@
 import os
 from flask import Flask, render_template, jsonify
-from tables import db, Countries, Cases, Deaths, Recovered, Company, DailyData, Sector
-
-import urllib.request as urllib
-import json
+from tables import db, Countries, Cases, Deaths, Recovered
 
 app = Flask(__name__)
 app.secret_key = os.urandom(32)
@@ -12,17 +9,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = 'False'
 
 # start database
 db.init_app(app)
-
-
-# printing companies data to confirm successful data parse
-# with app.app_context():
-#     companies = Company.query.all()
-#     for company in companies:
-#         if len(company.data_points) > 0:
-#             print(company.data_points[0].date)
-#     sector = Sector.query.filter_by(name = 'Industrials').first()
-#     for data in sector.data_points:
-#         print(data.date)
 
 
 def get_data(table):
@@ -45,29 +31,9 @@ def get_data(table):
     return data
 
 
-def get_sector_data(sector_name):
-    sector = Sector.query.filter_by(name=sector_name).first()
-    data_points = sector.data_points
-    data = {}
-    data['points'] = []
-    for point in data_points:
-        sub_data = {}
-        sub_data['date'] = point.date
-        sub_data['price'] = point.price
-        data['points'].append(sub_data)
-    return data
-
-
 @app.route('/', methods=['GET', 'POST'])
 def root():
     return render_template('index.html')
-
-
-@app.route('/econ/<sector_name>', methods=['GET', 'POST'])
-def econ(sector_name):
-    if sector_name == 'Industrials' or sector_name == 'Financials':
-        sector_name = sector_name[:-1]
-    return render_template('econ.html', sector_name=sector_name)
 
 
 @app.route('/data/<country>')
@@ -93,11 +59,6 @@ def deaths():
 @app.route('/data/recoveries')
 def recoveries():
     return jsonify(get_data(Recovered))
-
-
-@app.route('/data/sector/<sector_name>')
-def sectors(sector_name):
-    return jsonify(get_sector_data(sector_name))
 
 
 if __name__ == '__main__':

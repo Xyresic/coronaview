@@ -1,8 +1,8 @@
 # CoronaView<sup>TM</sup> by The SIMPsons
 This is a visualization of the spread of COVID-19 with data incorporated into an interactable world map, 
-providing a broad overview with the ability to obtain more data by clicking on a region.
-
-[Video Link Here!](https://youtu.be/P6Zl_F6nxYw)
+providing a broad overview with the ability to obtain more data by clicking on a region.  
+[Click here for live demo!](https://coronaviewtm.herokuapp.com/)  
+Data sourced from [Humanitarian Date Exchange](https://data.humdata.org/dataset/novel-coronavirus-2019-ncov-cases).
 
 ## Roster
 David Lupea: Project Manager  
