@@ -1,6 +1,7 @@
 import os
 from flask import Flask, render_template, jsonify
-from tables import db, Countries, Cases, Deaths, Recovered
+
+from app.tables import db, Countries, Cases, Deaths, Recovered
 
 app = Flask(__name__)
 app.secret_key = os.urandom(32)

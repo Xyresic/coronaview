@@ -1,8 +1,9 @@
-from __init__ import app, db
-from tables import Countries, Cases, Deaths, Recovered
 from csv import reader
 from urllib.request import urlopen
 from codecs import iterdecode
+
+from app.__init__ import app, db
+from app.tables import Countries, Cases, Deaths, Recovered
 
 rename = {
     "Antigua and Barbuda": "Antigua and Barb.",

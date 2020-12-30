@@ -15,8 +15,8 @@ Assumes Python3 and pip are installed.
 Virtual environment recommended.
 ### Cloning
 ```shell script
-git clone git@github.com:DavidLupea/The-SIMPsons_dlupea00_jlee01_elam00_mzhang00.git
-cd The-SIMPsons_dlupea00_jlee01_elam00_mzhang00
+git clone git@github.com:Xyresic/coronaview.git
+cd coronaview
 ```
 ### Dependencies
 ```shell script
@@ -24,10 +24,10 @@ pip install -r ./requirements.txt
 ```
 ### Running
 ```shell script
-python3 ./app/__init__.py
+python3 -m app.__init__
 ```
 Open your browser of choice and go to http://localhost:5000/
 ### Updating Data
 ```shell script
-python3 ./app/db_builder.py
+python3 -m app.db_builder
 ```
