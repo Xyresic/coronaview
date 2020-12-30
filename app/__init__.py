@@ -1,5 +1,8 @@
 import os
+
 from flask import Flask, render_template, jsonify
+from rq import Queue
+from app.worker import conn
 
 from app.tables import db, Countries, Cases, Deaths, Recovered
 
@@ -31,6 +34,11 @@ def get_data(table):
             data[date][country.name] = [0 if cases == 0 else (entry.amount / cases), entry.amount]
     return data
 
+#start background jobs
+q = Queue(connection=conn)
+cases = q.enqueue(jsonify, get_data(Cases))
+deaths = q.enqueue(jsonify, get_data(Deaths))
+recoveries = q.enqueue(jsonify, get_data(Recovered))
 
 @app.route('/', methods=['GET', 'POST'])
 def root():
@@ -49,17 +57,17 @@ def data(country):
 
 @app.route('/data/cases')
 def cases():
-    return jsonify(get_data(Cases))
+    return cases
 
 
 @app.route('/data/deaths')
 def deaths():
-    return jsonify(get_data(Deaths))
+    return deaths
 
 
 @app.route('/data/recoveries')
 def recoveries():
-    return jsonify(get_data(Recovered))
+    return recoveries
 
 
 if __name__ == '__main__':
