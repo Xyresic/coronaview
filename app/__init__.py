@@ -35,10 +35,11 @@ def get_data(table):
     return data
 
 #start background jobs
-q = Queue(connection=conn)
-cases = q.enqueue(jsonify, get_data(Cases))
-deaths = q.enqueue(jsonify, get_data(Deaths))
-recoveries = q.enqueue(jsonify, get_data(Recovered))
+with app.app_context():
+    q = Queue(connection=conn)
+    cases = q.enqueue(jsonify, get_data(Cases))
+    deaths = q.enqueue(jsonify, get_data(Deaths))
+    recoveries = q.enqueue(jsonify, get_data(Recovered))
 
 @app.route('/', methods=['GET', 'POST'])
 def root():
