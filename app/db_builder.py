@@ -47,7 +47,7 @@ cases_url = 'https://data.humdata.org/hxlproxy/data/download/time_series_covid19
             '-02-header=country%2Fregion&tagger-02-tag=%23country%2Bname&tagger-03-header=lat&tagger-03-tag=%23geo' \
             '%2Blat&tagger-04-header=long&tagger-04-tag=%23geo%2Blon&header-row=1&url=https%3A%2F%2Fraw' \
             '.githubusercontent.com%2FCSSEGISandData%2FCOVID-19%2Fmaster%2Fcsse_covid_19_data' \
-            '%2Fcsse_covid_19_time_series%2Ftime_series_covid19_confirmed_global.csv '
+            '%2Fcsse_covid_19_time_series%2Ftime_series_covid19_confirmed_global.csv'
 deaths_url = 'https://data.humdata.org/hxlproxy/data/download/time_series_covid19_deaths_global_narrow.csv?dest' \
              '=data_edit&filter01=merge&merge-url01=https%3A%2F%2Fdocs.google.com%2Fspreadsheets%2Fd%2Fe%2F2PACX' \
              '-1vTglKQRXpkKSErDiWG6ycqEth32MY0reMuVGhaslImLjfuLU0EUgyyu2e-3vKDArjqGX7dXEBV8FJ4f%2Fpub%3Fgid' \
@@ -66,7 +66,7 @@ deaths_url = 'https://data.humdata.org/hxlproxy/data/download/time_series_covid1
              '-02-header=country%2Fregion&tagger-02-tag=%23country%2Bname&tagger-03-header=lat&tagger-03-tag=%23geo' \
              '%2Blat&tagger-04-header=long&tagger-04-tag=%23geo%2Blon&header-row=1&url=https%3A%2F%2Fraw' \
              '.githubusercontent.com%2FCSSEGISandData%2FCOVID-19%2Fmaster%2Fcsse_covid_19_data' \
-             '%2Fcsse_covid_19_time_series%2Ftime_series_covid19_deaths_global.csv '
+             '%2Fcsse_covid_19_time_series%2Ftime_series_covid19_deaths_global.csv'
 recovered_url = 'https://data.humdata.org/hxlproxy/data/download/time_series_covid19_recovered_global_narrow.csv?dest' \
                 '=data_edit&filter01=merge&merge-url01=https%3A%2F%2Fdocs.google.com%2Fspreadsheets%2Fd%2Fe%2F2PACX' \
                 '-1vTglKQRXpkKSErDiWG6ycqEth32MY0reMuVGhaslImLjfuLU0EUgyyu2e-3vKDArjqGX7dXEBV8FJ4f%2Fpub%3Fgid' \
@@ -85,7 +85,7 @@ recovered_url = 'https://data.humdata.org/hxlproxy/data/download/time_series_cov
                 '-01-tag=%23adm1%2Bname&tagger-02-header=country%2Fregion&tagger-02-tag=%23country%2Bname&tagger-03' \
                 '-header=lat&tagger-03-tag=%23geo%2Blat&tagger-04-header=long&tagger-04-tag=%23geo%2Blon&header-row=1' \
                 '&url=https%3A%2F%2Fraw.githubusercontent.com%2FCSSEGISandData%2FCOVID-19%2Fmaster' \
-                '%2Fcsse_covid_19_data%2Fcsse_covid_19_time_series%2Ftime_series_covid19_recovered_global.csv '
+                '%2Fcsse_covid_19_data%2Fcsse_covid_19_time_series%2Ftime_series_covid19_recovered_global.csv'
 
 
 def retrieve_reader(request):
@@ -94,13 +94,21 @@ def retrieve_reader(request):
 
 def fill_db(file_reader, table):
     for row in file_reader:
-        if row[2] == '0.0':
+        if len(row) < 3 or row[2] == '0.0':
             continue
         name = rename[row[1]] if row[1] in rename else row[1]
+        if name == 'Summer Olympics 2020':
+            continue
+        if name == 'Micronesia':
+            row[6] = 'FSM'
         country = Countries.query.filter_by(name=name).first()
         if country is None:
             country = Countries.query.filter_by(code=row[6]).first()
-            country.name = name
+            try:
+                country.name = name
+            except AttributeError:
+                print(name)
+                print(row[6])
         case = Cases.query.filter_by(country_id=country.id, date=row[4]).first()
         if table is not Cases:
             entry = table.query.filter_by(cases_id=case.id, date=row[4]).first()
