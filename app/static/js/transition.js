@@ -7,7 +7,6 @@ let map_url = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-10m.json';
 let width = 1000;
 let height = 500;
 let date = new Date('2020-01-22T00:00:00'), timer, center;
-let data_full = {}, data_deaths = {}, data_recovered = {};
 let height_only = ['United States of America', 'France', 'Russia', 'Fiji'];
 let mode = 'Cases';
 
@@ -27,36 +26,12 @@ date.setDate(date.getDate() + range - 1);
 let max_date = get_date(date);
 date = new Date('2020-01-22T00:00:00');
 
-let next_request = (data, map, date) => {
-    map[get_date(date)] = data;
-    if (get_date(date) === max_date) {
-        if (map === data_full) {
-            $('.selectpicker').prop('disabled', false);
-            $('.selectpicker').selectpicker('refresh');
-             slider.setAttribute('max', range - 1);
-            slider.removeAttribute('disabled');
-            mode = 'Cases';
-            render(data_full);
-            let d1 = new Date('2020-01-22T00:00:00'), d2 = new Date('2020-01-22T00:00:00');
-            d3.json(`/data/deaths/${get_date(d1)}`).then(d => next_request(d, data_deaths, d1));
-            d3.json(`/data/recoveries/${get_date(d2)}`).then(d => next_request(d, data_recovered, d2));
-        } else if (map === data_deaths) {
-            $('#deaths-option').prop('disabled', false);
-            $('#selector').selectpicker('refresh');
-        } else {
-            $('#recovered-option').prop('disabled', false);
-            $('#selector').selectpicker('refresh');
-        }
-    } else {
-        date.setDate(date.getDate() + 1);
-        if (map === data_full) d3.json(`/data/cases/${get_date(date)}`).then(d => next_request(d, map, date));
-        else if (map === data_deaths) d3.json(`/data/deaths/${get_date(date)}`).then(d => next_request(d, map, date));
-        else d3.json(`/data/recoveries/${get_date(date)}`).then(d => next_request(d, map, date));
-    }
-}
-
-d3.json(`/data/cases/${get_date(date)}`).then(d => next_request(d, data_full, date));
-
+$('.selectpicker').prop('disabled', false);
+$('.selectpicker').selectpicker('refresh');
+range = Object.keys(data_full).length;
+slider.setAttribute('max', range - 1);
+slider.removeAttribute('disabled');
+mode = 'Cases';
 
 let map_data = d3.json(map_url)
 let get_percent = (d, data) => {
@@ -514,3 +489,7 @@ resume_btn.addEventListener('click', advance);
 pause_btn.addEventListener('click', pause)
 slider.addEventListener('input', update);
 selector.addEventListener('change', change_data);
+render(data_full);
+$('#deaths-option').prop('disabled', false);
+$('#recovered-option').prop('disabled', false);
+$('#selector').selectpicker('refresh');
